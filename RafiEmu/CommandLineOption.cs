@@ -11,7 +11,7 @@ namespace RafiEmu
         [Option("gdb", Required = false, HelpText = "TCP port number of gdbserver")]
         public int GdbPort { get; set; }
 
-        [Option('l', "load", Required = false, HelpText = "Binary file that is loaded to memory")]
+        [Option('l', "load", Required = true, HelpText = "Binary file that is loaded to memory")]
         public string Load { get; set; }
     }
 }
