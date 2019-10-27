@@ -1,12 +1,19 @@
 ﻿using System;
+using CommandLine;
 
 namespace RafiEmu
 {
-    class Program
+    public class Program
     {
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            Parser.Default.ParseArguments<CommandLineOption>(args)
+                .WithParsed(option =>
+                {
+                    Console.WriteLine($"Cycle: {option.Cycle}");
+                    Console.WriteLine($"Load: {option.Load}");
+                    Console.WriteLine($"GdbPort: {option.GdbPort}");
+                });
         }
     }
 }
