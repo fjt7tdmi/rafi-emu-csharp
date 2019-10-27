@@ -4,7 +4,7 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace RafiEmu
+namespace Rafi
 {
     internal class GdbServer : IDisposable
     {

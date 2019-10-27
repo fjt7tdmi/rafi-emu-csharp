@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace RafiEmu
+namespace Rafi
 {
     internal class GdbSession
     {

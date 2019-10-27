@@ -1,5 +1,6 @@
 ﻿using System;
 using CommandLine;
+using Rafi;
 
 namespace RafiEmu
 {

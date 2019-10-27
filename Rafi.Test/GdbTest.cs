@@ -2,7 +2,7 @@ using NUnit.Framework;
 
 namespace Rafi.Test
 {
-    public class Tests
+    public class GdbTest
     {
         [SetUp]
         public void Setup()
