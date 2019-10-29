@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
@@ -57,8 +58,10 @@ namespace Rafi
                     var tcpClient = tcpListener.AcceptTcpClient();
 
                     using (var stream = tcpClient.GetStream())
+                    using (var reader = new StreamReader(stream))
+                    using (var writer = new StreamWriter(stream))
                     {
-                        GdbSession.Process(stream);
+                        GdbSession.Process(reader, writer);
                     }
                 }
             }
