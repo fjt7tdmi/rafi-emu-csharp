@@ -1,9 +1,8 @@
 ﻿using System;
-using CommandLine;
 
-namespace RafiEmu
+namespace Rafi
 {
-    internal class System
+    public class Emulator
     {
         private readonly Memory memory = new Memory();
 

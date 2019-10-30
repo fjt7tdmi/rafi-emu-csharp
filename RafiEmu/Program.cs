@@ -6,7 +6,7 @@ namespace RafiEmu
 {
     public class Program
     {
-        private static readonly System system = new System();
+        private static readonly Emulator system = new Emulator();
 
         public static void Main(string[] args)
         {
