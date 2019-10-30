@@ -17,11 +17,11 @@ namespace Rafi.Test
         {
             var list = new List<(string, string)>
             {
-                ("$qSupported:multiprocess+;swbreak+;hwbreak+;qRelocInsn+;fork-events+;vfork-events+;exec-events+;vContSupported+;QThreadEvents+;no-resumed+#df", "+$PacketSize=1000;multiprocess+#81"),
+                ("$qSupported:multiprocess+;swbreak+;hwbreak+;qRelocInsn+;fork-events+;vfork-events+;exec-events+;vContSupported+;QThreadEvents+;no-resumed+#df", "+$PacketSize=1000#f1"),
                 ("$vMustReplyEmpty#3a", "+$#00"),
                 ("$Hgp0.0#ad", "+$OK#9a"),
                 ("$qTStatus#49", "+$#00"),
-                ("$?#3f", "+$T05thread:p01.01;#06"),
+                ("$?#3f", "+$S05#b8"),
                 ("$qfThreadInfo#bb", "+$mp01.01#cd"),
                 ("$qsThreadInfo#c8", "+$l#6c"),
                 ("$qAttached:1#fa", "+$1#31"),
