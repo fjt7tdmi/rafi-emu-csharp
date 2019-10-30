@@ -9,6 +9,7 @@ namespace Rafi
 {
     internal class GdbServer : IDisposable
     {
+        private readonly Emulator emulator;
         private readonly TcpListener tcpListener;
         private readonly Task task;
 
@@ -16,8 +17,10 @@ namespace Rafi
 
         private bool disposedValue = false;
 
-        public GdbServer(int port)
+        public GdbServer(Emulator emulator, int port)
         {
+            this.emulator = emulator;
+
             tcpListener = new TcpListener(new IPEndPoint(IPAddress.Loopback, port));
             tcpListener.Start();
 
@@ -61,7 +64,8 @@ namespace Rafi
                     using (var reader = new StreamReader(stream))
                     using (var writer = new StreamWriter(stream))
                     {
-                        GdbSession.Process(reader, writer);
+                        var session = new GdbSession(emulator);
+                        session.Process(reader, writer);
                     }
                 }
             }

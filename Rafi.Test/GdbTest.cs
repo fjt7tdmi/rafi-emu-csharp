@@ -40,7 +40,9 @@ namespace Rafi.Test
                 using (var reader = new StreamReader(req))
                 using (var writer = new StreamWriter(res))
                 {
-                    GdbSession.Process(reader, writer);
+                    var session = new GdbSession(null);
+
+                    session.Process(reader, writer);
 
                     var response = Encoding.UTF8.GetString(res.ToArray());
 
