@@ -9,5 +9,7 @@ namespace Rafi
         public IntReg IntReg { get; } = new IntReg();
 
         public uint Pc { get; set; } = 0;
+
+        public uint NextPc { get; set; } = 0;
     }
 }
