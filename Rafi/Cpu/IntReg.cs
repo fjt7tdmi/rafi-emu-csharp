@@ -6,23 +6,26 @@ namespace Rafi
     {
         private readonly uint[] values = new uint[32];
 
-        public uint[] Values
+        public uint[] Values => values;
+
+        public IntReg()
         {
-            get
-            {
-                var array = new uint[32];
-                Array.Copy(values, 0, array, 0, 32);
-                return array;
-            }
         }
 
-        public uint Get(int index) => values[index];
-
-        public void Set(int index, uint value)
+        public IntReg(IntReg intReg) 
         {
-            if (index != 0)
+            Buffer.BlockCopy(intReg.values, 0, values, 0, 32);
+        }
+
+        public uint this[int index]
+        {
+            get => values[index];
+            set
             {
-                values[index] = value;
+                if (index != 0)
+                {
+                    values[index] = value;
+                }
             }
         }
     }

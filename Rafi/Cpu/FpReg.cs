@@ -4,20 +4,23 @@ namespace Rafi
 {
     internal class FpReg
     {
-        private readonly ulong[] values = new ulong[32];
+        private readonly uint[] values = new uint[32];
 
-        public ulong[] Values
+        public uint[] Values => values;
+
+        public FpReg()
         {
-            get
-            {
-                var array = new ulong[32];
-                Array.Copy(values, 0, array, 0, 32);
-                return array;
-            }
         }
 
-        public ulong Get(int index) => values[index];
+        public FpReg(FpReg fpReg)
+        {
+            Buffer.BlockCopy(fpReg.values, 0, values, 0, 32);
+        }
 
-        public void Set(int index, ulong value) => values[index] = value;
+        public uint this[int index]
+        {
+            get => values[index];
+            set => values[index] = value;
+        }
     }
 }

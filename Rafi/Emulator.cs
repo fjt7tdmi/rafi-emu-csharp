@@ -6,7 +6,7 @@ namespace Rafi
     {
         private readonly Memory memory = new Memory();
 
-        internal Cpu Cpu { get; } = new Cpu();
+        internal Core Cpu { get; } = new Core();
 
         public void LoadToMemory(string path)
         {
