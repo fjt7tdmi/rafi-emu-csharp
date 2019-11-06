@@ -179,14 +179,14 @@ namespace Rafi
             // Only for RV32
             var sb = new StringBuilder();
 
-            foreach (uint value in emulator.Cpu.IntReg.Values)
+            foreach (uint value in emulator.Core.IntReg.Values)
             {
                 sb.Append(ConvertToHex(value));
             }
 
-            sb.Append(ConvertToHex(emulator.Cpu.Pc));
+            sb.Append(ConvertToHex(emulator.Core.Pc));
 
-            foreach (ulong value in emulator.Cpu.FpReg.Values)
+            foreach (ulong value in emulator.Core.FpReg.Values)
             {
                 sb.Append(ConvertToHex(value));
             }

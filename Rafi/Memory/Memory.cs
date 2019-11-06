@@ -18,5 +18,7 @@ namespace Rafi
                 Buffer.BlockCopy(buffer, 0, body, 0, buffer.Length);
             }
         }
+
+        public uint ReadUInt32(int addr) => BitConverter.ToUInt32(body, addr);
     }
 }

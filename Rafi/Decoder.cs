@@ -21,9 +21,9 @@ namespace Rafi
             switch (opcode)
             {
                 case 0b0110111:
-                    return new RV32I.LUI(i.rd, i.imm);
+                    return new RV32I.LUI(u.rd, u.imm);
                 case 0b0010111:
-                    return new RV32I.AUIPC(i.rd, i.imm);
+                    return new RV32I.AUIPC(u.rd, u.imm);
                 case 0b1101111:
                     return new RV32I.JAL(j.rd, j.imm);
                 case 0b1100111:
