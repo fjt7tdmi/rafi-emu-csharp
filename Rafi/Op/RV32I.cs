@@ -32,7 +32,7 @@ namespace Rafi.RV32I
 
         public void Execute(Core core)
         {
-            throw new NotImplementedException();
+            core.IntReg[rd] = core.Pc + imm;
         }
     }
 
@@ -49,7 +49,10 @@ namespace Rafi.RV32I
 
         public void Execute(Core core)
         {
-            throw new NotImplementedException();
+            var nextPc = core.NextPc;
+
+            core.NextPc = core.Pc + imm;
+            core.IntReg[rd] = nextPc;
         }
     }
 
@@ -68,7 +71,10 @@ namespace Rafi.RV32I
 
         public void Execute(Core core)
         {
-            throw new NotImplementedException();
+            var nextPc = core.NextPc;
+
+            core.NextPc = core.IntReg[rs1] + imm;
+            core.IntReg[rd] = nextPc;
         }
     }
 
@@ -87,7 +93,13 @@ namespace Rafi.RV32I
 
         public void Execute(Core core)
         {
-            throw new NotImplementedException();
+            var src1 = core.IntReg[rs1];
+            var src2 = core.IntReg[rs2];
+
+            if (src1 == src2)
+            {
+                core.NextPc = core.Pc + imm;
+            }
         }
     }
 
@@ -106,7 +118,13 @@ namespace Rafi.RV32I
 
         public void Execute(Core core)
         {
-            throw new NotImplementedException();
+            var src1 = core.IntReg[rs1];
+            var src2 = core.IntReg[rs2];
+
+            if (src1 != src2)
+            {
+                core.NextPc = core.Pc + imm;
+            }
         }
     }
 
@@ -125,7 +143,13 @@ namespace Rafi.RV32I
 
         public void Execute(Core core)
         {
-            throw new NotImplementedException();
+            var src1 = (int)core.IntReg[rs1];
+            var src2 = (int)core.IntReg[rs2];
+
+            if (src1 < src2)
+            {
+                core.NextPc = core.Pc + imm;
+            }
         }
     }
 
@@ -144,7 +168,13 @@ namespace Rafi.RV32I
 
         public void Execute(Core core)
         {
-            throw new NotImplementedException();
+            var src1 = (int)core.IntReg[rs1];
+            var src2 = (int)core.IntReg[rs2];
+
+            if (src1 >= src2)
+            {
+                core.NextPc = core.Pc + imm;
+            }
         }
     }
 
@@ -163,7 +193,13 @@ namespace Rafi.RV32I
 
         public void Execute(Core core)
         {
-            throw new NotImplementedException();
+            var src1 = core.IntReg[rs1];
+            var src2 = core.IntReg[rs2];
+
+            if (src1 < src2)
+            {
+                core.NextPc = core.Pc + imm;
+            }
         }
     }
 
@@ -182,7 +218,13 @@ namespace Rafi.RV32I
 
         public void Execute(Core core)
         {
-            throw new NotImplementedException();
+            var src1 = core.IntReg[rs1];
+            var src2 = core.IntReg[rs2];
+
+            if (src1 >= src2)
+            {
+                core.NextPc = core.Pc + imm;
+            }
         }
     }
 
@@ -201,7 +243,10 @@ namespace Rafi.RV32I
 
         public void Execute(Core core)
         {
-            throw new NotImplementedException();
+            var addr = core.IntReg[rs1] + imm;
+            var value = core.Bus.ReadUInt8(addr);
+
+            core.IntReg[rd] = Utils.SignExtend(8, value);
         }
     }
 
@@ -220,7 +265,10 @@ namespace Rafi.RV32I
 
         public void Execute(Core core)
         {
-            throw new NotImplementedException();
+            var addr = core.IntReg[rs1] + imm;
+            var value = core.Bus.ReadUInt16(addr);
+
+            core.IntReg[rd] = Utils.SignExtend(16, value);
         }
     }
 
@@ -239,7 +287,10 @@ namespace Rafi.RV32I
 
         public void Execute(Core core)
         {
-            throw new NotImplementedException();
+            var addr = core.IntReg[rs1] + imm;
+            var value = core.Bus.ReadUInt32(addr);
+
+            core.IntReg[rd] = value;
         }
     }
 
@@ -258,7 +309,10 @@ namespace Rafi.RV32I
 
         public void Execute(Core core)
         {
-            throw new NotImplementedException();
+            var addr = core.IntReg[rs1] + imm;
+            var value = core.Bus.ReadUInt8(addr);
+
+            core.IntReg[rd] = Utils.ZeroExtend(8, value);
         }
     }
 
@@ -277,7 +331,10 @@ namespace Rafi.RV32I
 
         public void Execute(Core core)
         {
-            throw new NotImplementedException();
+            var addr = core.IntReg[rs1] + imm;
+            var value = core.Bus.ReadUInt16(addr);
+
+            core.IntReg[rd] = Utils.ZeroExtend(16, value);
         }
     }
 
@@ -296,7 +353,10 @@ namespace Rafi.RV32I
 
         public void Execute(Core core)
         {
-            throw new NotImplementedException();
+            var addr = core.IntReg[rs1] + imm;
+            var value = (byte)core.IntReg[rs2];
+
+            core.Bus.WriteUInt8(addr, value);
         }
     }
 
@@ -315,7 +375,10 @@ namespace Rafi.RV32I
 
         public void Execute(Core core)
         {
-            throw new NotImplementedException();
+            var addr = core.IntReg[rs1] + imm;
+            var value = (ushort)core.IntReg[rs2];
+
+            core.Bus.WriteUInt16(addr, value);
         }
     }
 
@@ -334,7 +397,10 @@ namespace Rafi.RV32I
 
         public void Execute(Core core)
         {
-            throw new NotImplementedException();
+            var addr = core.IntReg[rs1] + imm;
+            var value = (ushort)core.IntReg[rs2];
+
+            core.Bus.WriteUInt32(addr, value);
         }
     }
 
@@ -353,7 +419,10 @@ namespace Rafi.RV32I
 
         public void Execute(Core core)
         {
-            throw new NotImplementedException();
+            var src1 = core.IntReg[rs1];
+            var value = src1 + imm;
+            
+            core.IntReg[rd] = value;
         }
     }
 
@@ -372,7 +441,10 @@ namespace Rafi.RV32I
 
         public void Execute(Core core)
         {
-            throw new NotImplementedException();
+            var src1 = (int)core.IntReg[rs1];
+            var value = (src1 < (int)imm) ? 1u : 0u;
+
+            core.IntReg[rd] = value;
         }
     }
 
@@ -391,7 +463,10 @@ namespace Rafi.RV32I
 
         public void Execute(Core core)
         {
-            throw new NotImplementedException();
+            var src1 = core.IntReg[rs1];
+            var value = (src1 < imm) ? 1u : 0u;
+
+            core.IntReg[rd] = value;
         }
     }
 
@@ -410,7 +485,10 @@ namespace Rafi.RV32I
 
         public void Execute(Core core)
         {
-            throw new NotImplementedException();
+            var src1 = core.IntReg[rs1];
+            var value = src1 ^ imm;
+
+            core.IntReg[rd] = value;
         }
     }
 
@@ -429,7 +507,10 @@ namespace Rafi.RV32I
 
         public void Execute(Core core)
         {
-            throw new NotImplementedException();
+            var src1 = core.IntReg[rs1];
+            var value = src1 | imm;
+
+            core.IntReg[rd] = value;
         }
     }
 
@@ -448,7 +529,10 @@ namespace Rafi.RV32I
 
         public void Execute(Core core)
         {
-            throw new NotImplementedException();
+            var src1 = core.IntReg[rs1];
+            var value = src1 & imm;
+
+            core.IntReg[rd] = value;
         }
     }
 
@@ -467,7 +551,10 @@ namespace Rafi.RV32I
 
         public void Execute(Core core)
         {
-            throw new NotImplementedException();
+            var src1 = core.IntReg[rs1];
+            var value = src1 << shamt;
+
+            core.IntReg[rd] = value;
         }
     }
 
@@ -486,7 +573,10 @@ namespace Rafi.RV32I
 
         public void Execute(Core core)
         {
-            throw new NotImplementedException();
+            var src1 = core.IntReg[rs1];
+            var value = src1 >> shamt;
+
+            core.IntReg[rd] = value;
         }
     }
 
@@ -505,7 +595,10 @@ namespace Rafi.RV32I
 
         public void Execute(Core core)
         {
-            throw new NotImplementedException();
+            var src1 = (int)core.IntReg[rs1];
+            var value = src1 >> shamt;
+
+            core.IntReg[rd] = (uint)value;
         }
     }
 

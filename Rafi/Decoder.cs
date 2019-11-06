@@ -8,7 +8,7 @@ namespace Rafi
         
         public IOp DecodeRV32I(uint insn)
         {
-            var opcode = Pick(insn, 0, 7);
+            var opcode = Utils.Pick(insn, 0, 7);
 
             var r = DecodeOperandR(insn);
             var i = DecodeOperandI(insn);
@@ -154,9 +154,9 @@ namespace Rafi
                         break;
                     }
                 case 0b0001111:
-                    if (i.rs1 == 0b00000 && i.funct3 == 0b000 && i.rd == 0b00000 && Pick(insn, 28, 4) == 0b0000)
+                    if (i.rs1 == 0b00000 && i.funct3 == 0b000 && i.rd == 0b00000 && Utils.Pick(insn, 28, 4) == 0b0000)
                     {
-                        return new RV32I.FENCE((int)Pick(insn, 24, 4), (int)Pick(insn, 20, 4));
+                        return new RV32I.FENCE((int)Utils.Pick(insn, 24, 4), (int)Utils.Pick(insn, 20, 4));
                     }
                     else if (i.rs1 == 0b00000 && i.funct3 == 0b000 && i.rd == 0b00000 && i.imm == 0b0000_0000_0000)
                     {
@@ -205,78 +205,61 @@ namespace Rafi
 
         private (int funct7, int rs2, int rs1, int funct3, int rd) DecodeOperandR(uint insn) =>
             new ValueTuple<int, int, int, int, int>(
-                (int)Pick(insn, 25, 7),
-                (int)Pick(insn, 20, 5),
-                (int)Pick(insn, 15, 5),
-                (int)Pick(insn, 12, 3),
-                (int)Pick(insn, 7, 5));
+                (int)Utils.Pick(insn, 25, 7),
+                (int)Utils.Pick(insn, 20, 5),
+                (int)Utils.Pick(insn, 15, 5),
+                (int)Utils.Pick(insn, 12, 3),
+                (int)Utils.Pick(insn, 7, 5));
 
         private (uint imm, int rs1, int funct3, int rd) DecodeOperandI(uint insn) =>
             new ValueTuple<uint, int, int, int>(
-                SignExtend(12,
-                    Pick(insn, 20, 12)),
-                (int)Pick(insn, 15, 5),
-                (int)Pick(insn, 12, 3),
-                (int)Pick(insn, 7, 5));
+                Utils.SignExtend(12,
+                    Utils.Pick(insn, 20, 12)),
+                (int)Utils.Pick(insn, 15, 5),
+                (int)Utils.Pick(insn, 12, 3),
+                (int)Utils.Pick(insn, 7, 5));
 
         private (int csr, uint zimm, int rs1, int funct3, int rd) DecodeOperandI_CSR(uint insn) =>
             new ValueTuple<int, uint, int, int, int>(
-                (int)Pick(insn, 20, 12),
-                Pick(insn, 15, 5),
-                (int)Pick(insn, 15, 5),
-                (int)Pick(insn, 12, 3),
-                (int)Pick(insn, 7, 5));
+                (int)Utils.Pick(insn, 20, 12),
+                Utils.Pick(insn, 15, 5),
+                (int)Utils.Pick(insn, 15, 5),
+                (int)Utils.Pick(insn, 12, 3),
+                (int)Utils.Pick(insn, 7, 5));
 
         private (uint imm, int rs2, int rs1, int funct3) DecodeOperandS(uint insn) =>
             new ValueTuple<uint, int, int, int>(
-                SignExtend(12,
-                    Pick(insn, 25, 7) << 5 |
-                    Pick(insn, 7, 5)),
-                (int)Pick(insn, 20, 5),
-                (int)Pick(insn, 15, 5),
-                (int)Pick(insn, 12, 3));
+                Utils.SignExtend(12,
+                    Utils.Pick(insn, 25, 7) << 5 |
+                    Utils.Pick(insn, 7, 5)),
+                (int)Utils.Pick(insn, 20, 5),
+                (int)Utils.Pick(insn, 15, 5),
+                (int)Utils.Pick(insn, 12, 3));
 
         private (uint imm, int rs2, int rs1, int funct3) DecodeOperandB(uint insn) =>
             new ValueTuple<uint, int, int, int>(
-                SignExtend(13,
-                    Pick(insn, 31) << 12 |
-                    Pick(insn, 7) << 11 |
-                    Pick(insn, 25, 6) << 5 |
-                    Pick(insn, 8, 4) << 1),
-                (int)Pick(insn, 20, 5),
-                (int)Pick(insn, 15, 5),
-                (int)Pick(insn, 12, 3));
+                Utils.SignExtend(13,
+                    Utils.Pick(insn, 31) << 12 |
+                    Utils.Pick(insn, 7) << 11 |
+                    Utils.Pick(insn, 25, 6) << 5 |
+                    Utils.Pick(insn, 8, 4) << 1),
+                (int)Utils.Pick(insn, 20, 5),
+                (int)Utils.Pick(insn, 15, 5),
+                (int)Utils.Pick(insn, 12, 3));
 
         private (uint imm, int rd) DecodeOperandU(uint insn) =>
             new ValueTuple<uint, int>(
-                Pick(insn, 12, 20) << 12,
-                (int)Pick(insn, 7, 5));
+                Utils.Pick(insn, 12, 20) << 12,
+                (int)Utils.Pick(insn, 7, 5));
 
         private (uint imm, int rd) DecodeOperandJ(uint insn) =>
             new ValueTuple<uint, int>(
-                SignExtend(21,
-                    Pick(insn, 31) << 20 |
-                    Pick(insn, 21, 10) << 1 |
-                    Pick(insn, 20) << 11 |
-                    Pick(insn, 12, 8) << 12
+                Utils.SignExtend(21,
+                    Utils.Pick(insn, 31) << 20 |
+                    Utils.Pick(insn, 21, 10) << 1 |
+                    Utils.Pick(insn, 20) << 11 |
+                    Utils.Pick(insn, 12, 8) << 12
                 ),
-                (int)Pick(insn, 7, 5));
-
-        private uint Pick(uint insn, int lsb, int width = 1) => (insn >> lsb) & ((1u << width) - 1);
-
-        private uint SignExtend(int width, uint value)
-        {
-            var sign = (value >> (width - 1)) & 1;
-            var mask = (1u << width) - 1;
-
-            if (sign == 0)
-            {
-                return value & mask;
-            }
-            else
-            {
-                return value | (~mask);
-            }
-        }
+                (int)Utils.Pick(insn, 7, 5));
     }
 }

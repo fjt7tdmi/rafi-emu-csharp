@@ -4,6 +4,8 @@ namespace Rafi
 {
     internal class Core
     {
+        public Bus Bus { get; }
+
         public FpReg FpReg { get; } = new FpReg();
 
         public IntReg IntReg { get; } = new IntReg();
@@ -11,5 +13,10 @@ namespace Rafi
         public uint Pc { get; set; } = 0;
 
         public uint NextPc { get; set; } = 0;
+
+        public Core(Bus bus)
+        {
+            Bus = bus;
+        }
     }
 }

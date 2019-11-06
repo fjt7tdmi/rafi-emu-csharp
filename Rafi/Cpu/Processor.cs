@@ -8,11 +8,13 @@ namespace Rafi
 
         private readonly Bus bus;
 
-        internal Core Core { get; } = new Core();
+        internal Core Core { get; }
 
         public Processor(Bus bus)
         {
             this.bus = bus;
+
+            Core = new Core(bus);
         }
 
         public void ProcessCycle()
