@@ -617,7 +617,10 @@ namespace Rafi.RV32I
 
         public void Execute(Core core)
         {
-            throw new NotImplementedException();
+            var src1 = core.IntReg[rs1];
+            var src2 = core.IntReg[rs2];
+
+            core.IntReg[rd] = src1 + src2;
         }
     }
 
@@ -636,7 +639,10 @@ namespace Rafi.RV32I
 
         public void Execute(Core core)
         {
-            throw new NotImplementedException();
+            var src1 = core.IntReg[rs1];
+            var src2 = core.IntReg[rs2];
+
+            core.IntReg[rd] = src1 - src2;
         }
     }
 
@@ -655,7 +661,10 @@ namespace Rafi.RV32I
 
         public void Execute(Core core)
         {
-            throw new NotImplementedException();
+            var src1 = core.IntReg[rs1];
+            var src2 = (int)core.IntReg[rs2];
+
+            core.IntReg[rd] = src1 << src2;
         }
     }
 
@@ -674,7 +683,10 @@ namespace Rafi.RV32I
 
         public void Execute(Core core)
         {
-            throw new NotImplementedException();
+            var src1 = (int)core.IntReg[rs1];
+            var src2 = (int)core.IntReg[rs2];
+
+            core.IntReg[rd] = (src1 < src2) ? 1u : 0u;
         }
     }
 
@@ -693,7 +705,10 @@ namespace Rafi.RV32I
 
         public void Execute(Core core)
         {
-            throw new NotImplementedException();
+            var src1 = core.IntReg[rs1];
+            var src2 = core.IntReg[rs2];
+
+            core.IntReg[rd] = (src1 < src2) ? 1u : 0u;
         }
     }
 
@@ -712,7 +727,10 @@ namespace Rafi.RV32I
 
         public void Execute(Core core)
         {
-            throw new NotImplementedException();
+            var src1 = core.IntReg[rs1];
+            var src2 = core.IntReg[rs2];
+
+            core.IntReg[rd] = src1 ^ src2;
         }
     }
 
@@ -731,7 +749,10 @@ namespace Rafi.RV32I
 
         public void Execute(Core core)
         {
-            throw new NotImplementedException();
+            var src1 = core.IntReg[rs1];
+            var src2 = (int)core.IntReg[rs2];
+
+            core.IntReg[rd] = src1 >> src2;
         }
     }
 
@@ -750,7 +771,10 @@ namespace Rafi.RV32I
 
         public void Execute(Core core)
         {
-            throw new NotImplementedException();
+            var src1 = (int)core.IntReg[rs1];
+            var src2 = (int)core.IntReg[rs2];
+
+            core.IntReg[rd] = (uint)(src1 >> src2);
         }
     }
 
@@ -769,7 +793,10 @@ namespace Rafi.RV32I
 
         public void Execute(Core core)
         {
-            throw new NotImplementedException();
+            var src1 = core.IntReg[rs1];
+            var src2 = core.IntReg[rs2];
+
+            core.IntReg[rd] = src1 | src2;
         }
     }
 
@@ -788,7 +815,10 @@ namespace Rafi.RV32I
 
         public void Execute(Core core)
         {
-            throw new NotImplementedException();
+            var src1 = core.IntReg[rs1];
+            var src2 = core.IntReg[rs2];
+
+            core.IntReg[rd] = src1 & src2;
         }
     }
 
