@@ -17,6 +17,9 @@ namespace Rafi.RV32I
         {
             core.IntReg[rd] = imm;
         }
+
+        public override string ToString() =>
+            $"lui {Names.IntReg[rd]},{imm}";
     }
 
     internal class AUIPC : IOp
@@ -34,6 +37,9 @@ namespace Rafi.RV32I
         {
             core.IntReg[rd] = core.Pc + imm;
         }
+
+        public override string ToString() =>
+            $"auipc {Names.IntReg[rd]},{imm}";
     }
 
     internal class JAL : IOp
@@ -54,6 +60,10 @@ namespace Rafi.RV32I
             core.NextPc = core.Pc + imm;
             core.IntReg[rd] = nextPc;
         }
+
+        public override string ToString() =>
+            (rd == 0) ? $"j #{imm}" :
+            $"jal {Names.IntReg[rd]},{imm}";
     }
 
     internal class JALR : IOp
@@ -76,6 +86,10 @@ namespace Rafi.RV32I
             core.NextPc = core.IntReg[rs1] + imm;
             core.IntReg[rd] = nextPc;
         }
+
+        public override string ToString() =>
+            (rd == 0) ? $"jr {Names.IntReg[rs1]},{imm}" :
+            $"jalr {Names.IntReg[rd]},{Names.IntReg[rs1]},{imm}";
     }
 
     internal class BEQ : IOp
@@ -101,6 +115,11 @@ namespace Rafi.RV32I
                 core.NextPc = core.Pc + imm;
             }
         }
+
+        public override string ToString() =>
+            (rs1 == 0) ? $"beqz {Names.IntReg[rs2]}, #{imm}" :
+            (rs2 == 0) ? $"beqz {Names.IntReg[rs1]}, #{imm}" :
+            $"beq {Names.IntReg[rs1]},{Names.IntReg[rs2]},{imm}";
     }
 
     internal class BNE : IOp
@@ -126,6 +145,11 @@ namespace Rafi.RV32I
                 core.NextPc = core.Pc + imm;
             }
         }
+
+        public override string ToString() =>
+            (rs1 == 0) ? $"bnez {Names.IntReg[rs2]}, #{imm}" :
+            (rs2 == 0) ? $"bnez {Names.IntReg[rs1]}, #{imm}" :
+            $"bne {Names.IntReg[rs1]},{Names.IntReg[rs2]},{imm}";
     }
 
     internal class BLT : IOp
@@ -151,6 +175,11 @@ namespace Rafi.RV32I
                 core.NextPc = core.Pc + imm;
             }
         }
+
+        public override string ToString() =>
+            (rs1 == 0) ? $"bltz {Names.IntReg[rs2]}, #{imm}" :
+            (rs2 == 0) ? $"bltz {Names.IntReg[rs1]}, #{imm}" :
+            $"blt {Names.IntReg[rs1]},{Names.IntReg[rs2]},{imm}";
     }
 
     internal class BGE : IOp
@@ -176,6 +205,11 @@ namespace Rafi.RV32I
                 core.NextPc = core.Pc + imm;
             }
         }
+
+        public override string ToString() =>
+            (rs1 == 0) ? $"bgez {Names.IntReg[rs2]}, #{imm}" :
+            (rs2 == 0) ? $"bgez {Names.IntReg[rs1]}, #{imm}" :
+            $"bge {Names.IntReg[rs1]},{Names.IntReg[rs2]},{imm}";
     }
 
     internal class BLTU : IOp
@@ -201,6 +235,9 @@ namespace Rafi.RV32I
                 core.NextPc = core.Pc + imm;
             }
         }
+
+        public override string ToString() =>
+            $"bltu {Names.IntReg[rs1]},{Names.IntReg[rs2]},{imm}";
     }
 
     internal class BGEU : IOp
@@ -226,6 +263,9 @@ namespace Rafi.RV32I
                 core.NextPc = core.Pc + imm;
             }
         }
+
+        public override string ToString() =>
+            $"bgeu {Names.IntReg[rs1]},{Names.IntReg[rs2]},{imm}";
     }
 
     internal class LB : IOp
@@ -248,6 +288,9 @@ namespace Rafi.RV32I
 
             core.IntReg[rd] = Utils.SignExtend(8, value);
         }
+
+        public override string ToString() =>
+            $"lb {Names.IntReg[rd]},{imm}({Names.IntReg[rs1]})";
     }
 
     internal class LH : IOp
@@ -270,6 +313,9 @@ namespace Rafi.RV32I
 
             core.IntReg[rd] = Utils.SignExtend(16, value);
         }
+
+        public override string ToString() =>
+            $"lh {Names.IntReg[rd]},{imm}({Names.IntReg[rs1]})";
     }
 
     internal class LW : IOp
@@ -292,6 +338,9 @@ namespace Rafi.RV32I
 
             core.IntReg[rd] = value;
         }
+
+        public override string ToString() =>
+            $"lw {Names.IntReg[rd]},{imm}({Names.IntReg[rs1]})";
     }
 
     internal class LBU : IOp
@@ -314,6 +363,9 @@ namespace Rafi.RV32I
 
             core.IntReg[rd] = Utils.ZeroExtend(8, value);
         }
+
+        public override string ToString() =>
+            $"lbu {Names.IntReg[rd]},{imm}({Names.IntReg[rs1]})";
     }
 
     internal class LHU : IOp
@@ -336,6 +388,9 @@ namespace Rafi.RV32I
 
             core.IntReg[rd] = Utils.ZeroExtend(16, value);
         }
+
+        public override string ToString() =>
+            $"lhu {Names.IntReg[rd]},{imm}({Names.IntReg[rs1]})";
     }
 
     internal class SB : IOp
@@ -358,6 +413,9 @@ namespace Rafi.RV32I
 
             core.Bus.WriteUInt8(addr, value);
         }
+
+        public override string ToString() =>
+            $"sb {Names.IntReg[rs2]},{imm}({Names.IntReg[rs1]})";
     }
 
     internal class SH : IOp
@@ -380,6 +438,9 @@ namespace Rafi.RV32I
 
             core.Bus.WriteUInt16(addr, value);
         }
+
+        public override string ToString() =>
+            $"sh {Names.IntReg[rs2]},{imm}({Names.IntReg[rs1]})";
     }
 
     internal class SW : IOp
@@ -402,6 +463,9 @@ namespace Rafi.RV32I
 
             core.Bus.WriteUInt32(addr, value);
         }
+
+        public override string ToString() =>
+            $"sw {Names.IntReg[rs2]},{imm}({Names.IntReg[rs1]})";
     }
 
     internal class ADDI : IOp
@@ -424,6 +488,9 @@ namespace Rafi.RV32I
             
             core.IntReg[rd] = value;
         }
+
+        public override string ToString() =>
+            $"addi {Names.IntReg[rd]},{Names.IntReg[rs1]},{(int)imm}";
     }
 
     internal class SLTI : IOp
@@ -446,6 +513,9 @@ namespace Rafi.RV32I
 
             core.IntReg[rd] = value;
         }
+
+        public override string ToString() =>
+            $"slti {Names.IntReg[rd]},{Names.IntReg[rs1]},{(int)imm}";
     }
 
     internal class SLTIU : IOp
@@ -468,6 +538,9 @@ namespace Rafi.RV32I
 
             core.IntReg[rd] = value;
         }
+
+        public override string ToString() =>
+            $"sltiu {Names.IntReg[rd]},{Names.IntReg[rs1]},{(int)imm}";
     }
 
     internal class XORI : IOp
@@ -490,6 +563,9 @@ namespace Rafi.RV32I
 
             core.IntReg[rd] = value;
         }
+
+        public override string ToString() =>
+            $"xori {Names.IntReg[rd]},{Names.IntReg[rs1]},{(int)imm}";
     }
 
     internal class ORI : IOp
@@ -512,6 +588,9 @@ namespace Rafi.RV32I
 
             core.IntReg[rd] = value;
         }
+
+        public override string ToString() =>
+            $"ori {Names.IntReg[rd]},{Names.IntReg[rs1]},{(int)imm}";
     }
 
     internal class ANDI : IOp
@@ -534,6 +613,9 @@ namespace Rafi.RV32I
 
             core.IntReg[rd] = value;
         }
+
+        public override string ToString() =>
+            $"andi {Names.IntReg[rd]},{Names.IntReg[rs1]},{(int)imm}";
     }
 
     internal class SLLI : IOp
@@ -556,6 +638,9 @@ namespace Rafi.RV32I
 
             core.IntReg[rd] = value;
         }
+
+        public override string ToString() =>
+            $"slli {Names.IntReg[rd]},{Names.IntReg[rs1]},0x{shamt:x}";
     }
 
     internal class SRLI : IOp
@@ -578,6 +663,9 @@ namespace Rafi.RV32I
 
             core.IntReg[rd] = value;
         }
+
+        public override string ToString() =>
+            $"srli {Names.IntReg[rd]},{Names.IntReg[rs1]},0x{shamt:x}";
     }
 
     internal class SRAI : IOp
@@ -600,6 +688,9 @@ namespace Rafi.RV32I
 
             core.IntReg[rd] = (uint)value;
         }
+
+        public override string ToString() =>
+            $"srai {Names.IntReg[rd]},{Names.IntReg[rs1]},0x{shamt:x}";
     }
 
     internal class ADD : IOp
@@ -622,6 +713,9 @@ namespace Rafi.RV32I
 
             core.IntReg[rd] = src1 + src2;
         }
+
+        public override string ToString() =>
+            $"add {Names.IntReg[rd]},{Names.IntReg[rs1]},{Names.IntReg[rs2]}";
     }
 
     internal class SUB : IOp
@@ -644,6 +738,9 @@ namespace Rafi.RV32I
 
             core.IntReg[rd] = src1 - src2;
         }
+
+        public override string ToString() =>
+            $"sub {Names.IntReg[rd]},{Names.IntReg[rs1]},{Names.IntReg[rs2]}";
     }
 
     internal class SLL : IOp
@@ -666,6 +763,9 @@ namespace Rafi.RV32I
 
             core.IntReg[rd] = src1 << src2;
         }
+
+        public override string ToString() =>
+            $"sll {Names.IntReg[rd]},{Names.IntReg[rs1]},{Names.IntReg[rs2]}";
     }
 
     internal class SLT : IOp
@@ -688,6 +788,9 @@ namespace Rafi.RV32I
 
             core.IntReg[rd] = (src1 < src2) ? 1u : 0u;
         }
+
+        public override string ToString() =>
+            $"slt {Names.IntReg[rd]},{Names.IntReg[rs1]},{Names.IntReg[rs2]}";
     }
 
     internal class SLTU : IOp
@@ -710,6 +813,9 @@ namespace Rafi.RV32I
 
             core.IntReg[rd] = (src1 < src2) ? 1u : 0u;
         }
+
+        public override string ToString() =>
+            $"sltu {Names.IntReg[rd]},{Names.IntReg[rs1]},{Names.IntReg[rs2]}";
     }
 
     internal class XOR : IOp
@@ -732,6 +838,9 @@ namespace Rafi.RV32I
 
             core.IntReg[rd] = src1 ^ src2;
         }
+
+        public override string ToString() =>
+            $"xor {Names.IntReg[rd]},{Names.IntReg[rs1]},{Names.IntReg[rs2]}";
     }
 
     internal class SRL : IOp
@@ -754,6 +863,9 @@ namespace Rafi.RV32I
 
             core.IntReg[rd] = src1 >> src2;
         }
+
+        public override string ToString() =>
+            $"srl {Names.IntReg[rd]},{Names.IntReg[rs1]},{Names.IntReg[rs2]}";
     }
 
     internal class SRA : IOp
@@ -776,6 +888,9 @@ namespace Rafi.RV32I
 
             core.IntReg[rd] = (uint)(src1 >> src2);
         }
+
+        public override string ToString() =>
+            $"sra {Names.IntReg[rd]},{Names.IntReg[rs1]},{Names.IntReg[rs2]}";
     }
 
     internal class OR : IOp
@@ -798,6 +913,9 @@ namespace Rafi.RV32I
 
             core.IntReg[rd] = src1 | src2;
         }
+
+        public override string ToString() =>
+            $"or {Names.IntReg[rd]},{Names.IntReg[rs1]},{Names.IntReg[rs2]}";
     }
 
     internal class AND : IOp
@@ -820,6 +938,9 @@ namespace Rafi.RV32I
 
             core.IntReg[rd] = src1 & src2;
         }
+
+        public override string ToString() =>
+            $"and {Names.IntReg[rd]},{Names.IntReg[rs1]},{Names.IntReg[rs2]}";
     }
 
     internal class FENCE : IOp
@@ -837,6 +958,9 @@ namespace Rafi.RV32I
         {
             throw new NotImplementedException();
         }
+
+        public override string ToString() =>
+            $"fence";
     }
 
     internal class FENCE_I : IOp
@@ -849,6 +973,9 @@ namespace Rafi.RV32I
         {
             throw new NotImplementedException();
         }
+
+        public override string ToString() =>
+            $"fence.i";
     }
 
     internal class ECALL : IOp
@@ -861,6 +988,9 @@ namespace Rafi.RV32I
         {
             throw new NotImplementedException();
         }
+
+        public override string ToString() =>
+            $"ecall";
     }
 
     internal class EBREAK : IOp
@@ -873,6 +1003,9 @@ namespace Rafi.RV32I
         {
             throw new NotImplementedException();
         }
+
+        public override string ToString() =>
+            $"ebreak";
     }
 
     internal class CSRRW : IOp
@@ -892,6 +1025,10 @@ namespace Rafi.RV32I
         {
             throw new NotImplementedException();
         }
+
+        public override string ToString() =>
+            (rd == 0) ? $"csrw {Names.Csr[csr]},{Names.IntReg[rs1]}" :
+            $"csrrw {Names.IntReg[rd]},{Names.Csr[csr]},{Names.IntReg[rs1]}";
     }
 
     internal class CSRRS : IOp
@@ -911,6 +1048,11 @@ namespace Rafi.RV32I
         {
             throw new NotImplementedException();
         }
+
+        public override string ToString() =>
+            (rs1 == 0) ? $"csrr {Names.IntReg[rd]},{Names.Csr[csr]}" :
+            (rd == 0) ? $"csrr {Names.Csr[csr]},{Names.IntReg[rs1]}" :
+            $"csrrs {Names.IntReg[rd]},{Names.Csr[csr]},{Names.IntReg[rs1]}";
     }
 
     internal class CSRRC : IOp
@@ -930,6 +1072,10 @@ namespace Rafi.RV32I
         {
             throw new NotImplementedException();
         }
+
+        public override string ToString() =>
+            (rd == 0) ? $"csrc {Names.Csr[csr]},{Names.IntReg[rs1]}" :
+            $"csrrc {Names.IntReg[rd]},{Names.Csr[csr]},{Names.IntReg[rs1]}";
     }
 
     internal class CSRRWI : IOp
@@ -949,6 +1095,10 @@ namespace Rafi.RV32I
         {
             throw new NotImplementedException();
         }
+
+        public override string ToString() =>
+            (rd == 0) ? $"csrwi {Names.Csr[csr]},{zimm}" :
+            $"csrrwi {Names.IntReg[rd]},{Names.Csr[csr]},{zimm}";
     }
 
     internal class CSRRSI : IOp
@@ -968,6 +1118,10 @@ namespace Rafi.RV32I
         {
             throw new NotImplementedException();
         }
+
+        public override string ToString() =>
+            (rd == 0) ? $"csrsi {Names.Csr[csr]},{zimm}" :
+            $"csrrsi {Names.IntReg[rd]},{Names.Csr[csr]},{zimm}";
     }
 
     internal class CSRRCI : IOp
@@ -987,5 +1141,9 @@ namespace Rafi.RV32I
         {
             throw new NotImplementedException();
         }
+
+        public override string ToString() =>
+            (rd == 0) ? $"csrci {Names.Csr[csr]},{zimm}" :
+            $"csrrci {Names.IntReg[rd]},{Names.Csr[csr]},{zimm}";
     }
 }
