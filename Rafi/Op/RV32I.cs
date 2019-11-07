@@ -1023,7 +1023,10 @@ namespace Rafi.RV32I
 
         public void Execute(Core core)
         {
-            throw new NotImplementedException();
+            var value = core.Csr[csr];
+
+            core.Csr[csr] = core.IntReg[rs1];
+            core.IntReg[rd] = value;
         }
 
         public override string ToString() =>
@@ -1046,7 +1049,10 @@ namespace Rafi.RV32I
 
         public void Execute(Core core)
         {
-            throw new NotImplementedException();
+            var value = core.Csr[csr];
+
+            core.Csr[csr] = value | core.IntReg[rs1];
+            core.IntReg[rd] = value;
         }
 
         public override string ToString() =>
@@ -1070,7 +1076,10 @@ namespace Rafi.RV32I
 
         public void Execute(Core core)
         {
-            throw new NotImplementedException();
+            var value = core.Csr[csr];
+
+            core.Csr[csr] = ~value & core.IntReg[rs1];
+            core.IntReg[rd] = value;
         }
 
         public override string ToString() =>
@@ -1093,7 +1102,10 @@ namespace Rafi.RV32I
 
         public void Execute(Core core)
         {
-            throw new NotImplementedException();
+            var value = core.Csr[csr];
+
+            core.Csr[csr] = zimm;
+            core.IntReg[rd] = value;
         }
 
         public override string ToString() =>
@@ -1116,7 +1128,10 @@ namespace Rafi.RV32I
 
         public void Execute(Core core)
         {
-            throw new NotImplementedException();
+            var value = core.Csr[csr];
+
+            core.Csr[csr] = value | zimm;
+            core.IntReg[rd] = value;
         }
 
         public override string ToString() =>
@@ -1139,7 +1154,10 @@ namespace Rafi.RV32I
 
         public void Execute(Core core)
         {
-            throw new NotImplementedException();
+            var value = core.Csr[csr];
+
+            core.Csr[csr] = ~value & zimm;
+            core.IntReg[rd] = value;
         }
 
         public override string ToString() =>

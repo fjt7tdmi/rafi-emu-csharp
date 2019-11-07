@@ -6,6 +6,8 @@ namespace Rafi
     {
         public Bus Bus { get; }
 
+        public Csr Csr { get; } = new Csr();
+
         public FpReg FpReg { get; } = new FpReg();
 
         public IntReg IntReg { get; } = new IntReg();
