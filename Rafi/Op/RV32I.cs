@@ -2,7 +2,7 @@
 
 namespace Rafi.RV32I
 {
-    internal class LUI : IOp
+    internal class LUI : Op
     {
         private readonly int rd;
         private readonly uint imm;
@@ -13,7 +13,7 @@ namespace Rafi.RV32I
             this.imm = imm;
         }
 
-        public void Execute(Core core)
+        public override void Execute(Core core)
         {
             core.IntReg[rd] = imm;
         }
@@ -22,7 +22,7 @@ namespace Rafi.RV32I
             $"lui {Names.IntReg[rd]},{imm}";
     }
 
-    internal class AUIPC : IOp
+    internal class AUIPC : Op
     {
         private readonly int rd;
         private readonly uint imm;
@@ -33,7 +33,7 @@ namespace Rafi.RV32I
             this.imm = imm;
         }
 
-        public void Execute(Core core)
+        public override void Execute(Core core)
         {
             core.IntReg[rd] = core.Pc + imm;
         }
@@ -42,7 +42,7 @@ namespace Rafi.RV32I
             $"auipc {Names.IntReg[rd]},{imm}";
     }
 
-    internal class JAL : IOp
+    internal class JAL : Op
     {
         private readonly int rd;
         private readonly uint imm;
@@ -53,7 +53,7 @@ namespace Rafi.RV32I
             this.imm = imm;
         }
 
-        public void Execute(Core core)
+        public override void Execute(Core core)
         {
             var nextPc = core.NextPc;
 
@@ -66,7 +66,7 @@ namespace Rafi.RV32I
             $"jal {Names.IntReg[rd]},{imm}";
     }
 
-    internal class JALR : IOp
+    internal class JALR : Op
     {
         private readonly int rd;
         private readonly int rs1;
@@ -79,7 +79,7 @@ namespace Rafi.RV32I
             this.imm = imm;
         }
 
-        public void Execute(Core core)
+        public override void Execute(Core core)
         {
             var nextPc = core.NextPc;
 
@@ -92,7 +92,7 @@ namespace Rafi.RV32I
             $"jalr {Names.IntReg[rd]},{Names.IntReg[rs1]},{imm}";
     }
 
-    internal class BEQ : IOp
+    internal class BEQ : Op
     {
         private readonly int rs1;
         private readonly int rs2;
@@ -105,7 +105,7 @@ namespace Rafi.RV32I
             this.imm = imm;
         }
 
-        public void Execute(Core core)
+        public override void Execute(Core core)
         {
             var src1 = core.IntReg[rs1];
             var src2 = core.IntReg[rs2];
@@ -122,7 +122,7 @@ namespace Rafi.RV32I
             $"beq {Names.IntReg[rs1]},{Names.IntReg[rs2]},{imm}";
     }
 
-    internal class BNE : IOp
+    internal class BNE : Op
     {
         private readonly int rs1;
         private readonly int rs2;
@@ -135,7 +135,7 @@ namespace Rafi.RV32I
             this.imm = imm;
         }
 
-        public void Execute(Core core)
+        public override void Execute(Core core)
         {
             var src1 = core.IntReg[rs1];
             var src2 = core.IntReg[rs2];
@@ -152,7 +152,7 @@ namespace Rafi.RV32I
             $"bne {Names.IntReg[rs1]},{Names.IntReg[rs2]},{imm}";
     }
 
-    internal class BLT : IOp
+    internal class BLT : Op
     {
         private readonly int rs1;
         private readonly int rs2;
@@ -165,7 +165,7 @@ namespace Rafi.RV32I
             this.imm = imm;
         }
 
-        public void Execute(Core core)
+        public override void Execute(Core core)
         {
             var src1 = (int)core.IntReg[rs1];
             var src2 = (int)core.IntReg[rs2];
@@ -182,7 +182,7 @@ namespace Rafi.RV32I
             $"blt {Names.IntReg[rs1]},{Names.IntReg[rs2]},{imm}";
     }
 
-    internal class BGE : IOp
+    internal class BGE : Op
     {
         private readonly int rs1;
         private readonly int rs2;
@@ -195,7 +195,7 @@ namespace Rafi.RV32I
             this.imm = imm;
         }
 
-        public void Execute(Core core)
+        public override void Execute(Core core)
         {
             var src1 = (int)core.IntReg[rs1];
             var src2 = (int)core.IntReg[rs2];
@@ -212,7 +212,7 @@ namespace Rafi.RV32I
             $"bge {Names.IntReg[rs1]},{Names.IntReg[rs2]},{imm}";
     }
 
-    internal class BLTU : IOp
+    internal class BLTU : Op
     {
         private readonly int rs1;
         private readonly int rs2;
@@ -225,7 +225,7 @@ namespace Rafi.RV32I
             this.imm = imm;
         }
 
-        public void Execute(Core core)
+        public override void Execute(Core core)
         {
             var src1 = core.IntReg[rs1];
             var src2 = core.IntReg[rs2];
@@ -240,7 +240,7 @@ namespace Rafi.RV32I
             $"bltu {Names.IntReg[rs1]},{Names.IntReg[rs2]},{imm}";
     }
 
-    internal class BGEU : IOp
+    internal class BGEU : Op
     {
         private readonly int rs1;
         private readonly int rs2;
@@ -253,7 +253,7 @@ namespace Rafi.RV32I
             this.imm = imm;
         }
 
-        public void Execute(Core core)
+        public override void Execute(Core core)
         {
             var src1 = core.IntReg[rs1];
             var src2 = core.IntReg[rs2];
@@ -268,7 +268,7 @@ namespace Rafi.RV32I
             $"bgeu {Names.IntReg[rs1]},{Names.IntReg[rs2]},{imm}";
     }
 
-    internal class LB : IOp
+    internal class LB : Op
     {
         private readonly int rd;
         private readonly int rs1;
@@ -281,7 +281,7 @@ namespace Rafi.RV32I
             this.imm = imm;
         }
 
-        public void Execute(Core core)
+        public override void Execute(Core core)
         {
             var addr = core.IntReg[rs1] + imm;
             var value = core.Bus.ReadUInt8(addr);
@@ -293,7 +293,7 @@ namespace Rafi.RV32I
             $"lb {Names.IntReg[rd]},{imm}({Names.IntReg[rs1]})";
     }
 
-    internal class LH : IOp
+    internal class LH : Op
     {
         private readonly int rd;
         private readonly int rs1;
@@ -306,7 +306,7 @@ namespace Rafi.RV32I
             this.imm = imm;
         }
 
-        public void Execute(Core core)
+        public override void Execute(Core core)
         {
             var addr = core.IntReg[rs1] + imm;
             var value = core.Bus.ReadUInt16(addr);
@@ -318,7 +318,7 @@ namespace Rafi.RV32I
             $"lh {Names.IntReg[rd]},{imm}({Names.IntReg[rs1]})";
     }
 
-    internal class LW : IOp
+    internal class LW : Op
     {
         private readonly int rd;
         private readonly int rs1;
@@ -331,7 +331,7 @@ namespace Rafi.RV32I
             this.imm = imm;
         }
 
-        public void Execute(Core core)
+        public override void Execute(Core core)
         {
             var addr = core.IntReg[rs1] + imm;
             var value = core.Bus.ReadUInt32(addr);
@@ -343,7 +343,7 @@ namespace Rafi.RV32I
             $"lw {Names.IntReg[rd]},{imm}({Names.IntReg[rs1]})";
     }
 
-    internal class LBU : IOp
+    internal class LBU : Op
     {
         private readonly int rd;
         private readonly int rs1;
@@ -356,7 +356,7 @@ namespace Rafi.RV32I
             this.imm = imm;
         }
 
-        public void Execute(Core core)
+        public override void Execute(Core core)
         {
             var addr = core.IntReg[rs1] + imm;
             var value = core.Bus.ReadUInt8(addr);
@@ -368,7 +368,7 @@ namespace Rafi.RV32I
             $"lbu {Names.IntReg[rd]},{imm}({Names.IntReg[rs1]})";
     }
 
-    internal class LHU : IOp
+    internal class LHU : Op
     {
         private readonly int rd;
         private readonly int rs1;
@@ -381,7 +381,7 @@ namespace Rafi.RV32I
             this.imm = imm;
         }
 
-        public void Execute(Core core)
+        public override void Execute(Core core)
         {
             var addr = core.IntReg[rs1] + imm;
             var value = core.Bus.ReadUInt16(addr);
@@ -393,7 +393,7 @@ namespace Rafi.RV32I
             $"lhu {Names.IntReg[rd]},{imm}({Names.IntReg[rs1]})";
     }
 
-    internal class SB : IOp
+    internal class SB : Op
     {
         private readonly int rs1;
         private readonly int rs2;
@@ -406,7 +406,7 @@ namespace Rafi.RV32I
             this.imm = imm;
         }
 
-        public void Execute(Core core)
+        public override void Execute(Core core)
         {
             var addr = core.IntReg[rs1] + imm;
             var value = (byte)core.IntReg[rs2];
@@ -418,7 +418,7 @@ namespace Rafi.RV32I
             $"sb {Names.IntReg[rs2]},{imm}({Names.IntReg[rs1]})";
     }
 
-    internal class SH : IOp
+    internal class SH : Op
     {
         private readonly int rs1;
         private readonly int rs2;
@@ -431,7 +431,7 @@ namespace Rafi.RV32I
             this.imm = imm;
         }
 
-        public void Execute(Core core)
+        public override void Execute(Core core)
         {
             var addr = core.IntReg[rs1] + imm;
             var value = (ushort)core.IntReg[rs2];
@@ -443,7 +443,7 @@ namespace Rafi.RV32I
             $"sh {Names.IntReg[rs2]},{imm}({Names.IntReg[rs1]})";
     }
 
-    internal class SW : IOp
+    internal class SW : Op
     {
         private readonly int rs1;
         private readonly int rs2;
@@ -456,7 +456,7 @@ namespace Rafi.RV32I
             this.imm = imm;
         }
 
-        public void Execute(Core core)
+        public override void Execute(Core core)
         {
             var addr = core.IntReg[rs1] + imm;
             var value = (ushort)core.IntReg[rs2];
@@ -468,7 +468,7 @@ namespace Rafi.RV32I
             $"sw {Names.IntReg[rs2]},{imm}({Names.IntReg[rs1]})";
     }
 
-    internal class ADDI : IOp
+    internal class ADDI : Op
     {
         private readonly int rd;
         private readonly int rs1;
@@ -481,7 +481,7 @@ namespace Rafi.RV32I
             this.imm = imm;
         }
 
-        public void Execute(Core core)
+        public override void Execute(Core core)
         {
             var src1 = core.IntReg[rs1];
             var value = src1 + imm;
@@ -493,7 +493,7 @@ namespace Rafi.RV32I
             $"addi {Names.IntReg[rd]},{Names.IntReg[rs1]},{(int)imm}";
     }
 
-    internal class SLTI : IOp
+    internal class SLTI : Op
     {
         private readonly int rd;
         private readonly int rs1;
@@ -506,7 +506,7 @@ namespace Rafi.RV32I
             this.imm = imm;
         }
 
-        public void Execute(Core core)
+        public override void Execute(Core core)
         {
             var src1 = (int)core.IntReg[rs1];
             var value = (src1 < (int)imm) ? 1u : 0u;
@@ -518,7 +518,7 @@ namespace Rafi.RV32I
             $"slti {Names.IntReg[rd]},{Names.IntReg[rs1]},{(int)imm}";
     }
 
-    internal class SLTIU : IOp
+    internal class SLTIU : Op
     {
         private readonly int rd;
         private readonly int rs1;
@@ -531,7 +531,7 @@ namespace Rafi.RV32I
             this.imm = imm;
         }
 
-        public void Execute(Core core)
+        public override void Execute(Core core)
         {
             var src1 = core.IntReg[rs1];
             var value = (src1 < imm) ? 1u : 0u;
@@ -543,7 +543,7 @@ namespace Rafi.RV32I
             $"sltiu {Names.IntReg[rd]},{Names.IntReg[rs1]},{(int)imm}";
     }
 
-    internal class XORI : IOp
+    internal class XORI : Op
     {
         private readonly int rd;
         private readonly int rs1;
@@ -556,7 +556,7 @@ namespace Rafi.RV32I
             this.imm = imm;
         }
 
-        public void Execute(Core core)
+        public override void Execute(Core core)
         {
             var src1 = core.IntReg[rs1];
             var value = src1 ^ imm;
@@ -568,7 +568,7 @@ namespace Rafi.RV32I
             $"xori {Names.IntReg[rd]},{Names.IntReg[rs1]},{(int)imm}";
     }
 
-    internal class ORI : IOp
+    internal class ORI : Op
     {
         private readonly int rd;
         private readonly int rs1;
@@ -581,7 +581,7 @@ namespace Rafi.RV32I
             this.imm = imm;
         }
 
-        public void Execute(Core core)
+        public override void Execute(Core core)
         {
             var src1 = core.IntReg[rs1];
             var value = src1 | imm;
@@ -593,7 +593,7 @@ namespace Rafi.RV32I
             $"ori {Names.IntReg[rd]},{Names.IntReg[rs1]},{(int)imm}";
     }
 
-    internal class ANDI : IOp
+    internal class ANDI : Op
     {
         private readonly int rd;
         private readonly int rs1;
@@ -606,7 +606,7 @@ namespace Rafi.RV32I
             this.imm = imm;
         }
 
-        public void Execute(Core core)
+        public override void Execute(Core core)
         {
             var src1 = core.IntReg[rs1];
             var value = src1 & imm;
@@ -618,7 +618,7 @@ namespace Rafi.RV32I
             $"andi {Names.IntReg[rd]},{Names.IntReg[rs1]},{(int)imm}";
     }
 
-    internal class SLLI : IOp
+    internal class SLLI : Op
     {
         private readonly int rd;
         private readonly int rs1;
@@ -631,7 +631,7 @@ namespace Rafi.RV32I
             this.shamt = shamt;
         }
 
-        public void Execute(Core core)
+        public override void Execute(Core core)
         {
             var src1 = core.IntReg[rs1];
             var value = src1 << shamt;
@@ -643,7 +643,7 @@ namespace Rafi.RV32I
             $"slli {Names.IntReg[rd]},{Names.IntReg[rs1]},0x{shamt:x}";
     }
 
-    internal class SRLI : IOp
+    internal class SRLI : Op
     {
         private readonly int rd;
         private readonly int rs1;
@@ -656,7 +656,7 @@ namespace Rafi.RV32I
             this.shamt = shamt;
         }
 
-        public void Execute(Core core)
+        public override void Execute(Core core)
         {
             var src1 = core.IntReg[rs1];
             var value = src1 >> shamt;
@@ -668,7 +668,7 @@ namespace Rafi.RV32I
             $"srli {Names.IntReg[rd]},{Names.IntReg[rs1]},0x{shamt:x}";
     }
 
-    internal class SRAI : IOp
+    internal class SRAI : Op
     {
         private readonly int rd;
         private readonly int rs1;
@@ -681,7 +681,7 @@ namespace Rafi.RV32I
             this.shamt = shamt;
         }
 
-        public void Execute(Core core)
+        public override void Execute(Core core)
         {
             var src1 = (int)core.IntReg[rs1];
             var value = src1 >> shamt;
@@ -693,7 +693,7 @@ namespace Rafi.RV32I
             $"srai {Names.IntReg[rd]},{Names.IntReg[rs1]},0x{shamt:x}";
     }
 
-    internal class ADD : IOp
+    internal class ADD : Op
     {
         private readonly int rd;
         private readonly int rs1;
@@ -706,7 +706,7 @@ namespace Rafi.RV32I
             this.rs2 = rs2;
         }
 
-        public void Execute(Core core)
+        public override void Execute(Core core)
         {
             var src1 = core.IntReg[rs1];
             var src2 = core.IntReg[rs2];
@@ -718,7 +718,7 @@ namespace Rafi.RV32I
             $"add {Names.IntReg[rd]},{Names.IntReg[rs1]},{Names.IntReg[rs2]}";
     }
 
-    internal class SUB : IOp
+    internal class SUB : Op
     {
         private readonly int rd;
         private readonly int rs1;
@@ -731,7 +731,7 @@ namespace Rafi.RV32I
             this.rs2 = rs2;
         }
 
-        public void Execute(Core core)
+        public override void Execute(Core core)
         {
             var src1 = core.IntReg[rs1];
             var src2 = core.IntReg[rs2];
@@ -743,7 +743,7 @@ namespace Rafi.RV32I
             $"sub {Names.IntReg[rd]},{Names.IntReg[rs1]},{Names.IntReg[rs2]}";
     }
 
-    internal class SLL : IOp
+    internal class SLL : Op
     {
         private readonly int rd;
         private readonly int rs1;
@@ -756,7 +756,7 @@ namespace Rafi.RV32I
             this.rs2 = rs2;
         }
 
-        public void Execute(Core core)
+        public override void Execute(Core core)
         {
             var src1 = core.IntReg[rs1];
             var src2 = (int)core.IntReg[rs2];
@@ -768,7 +768,7 @@ namespace Rafi.RV32I
             $"sll {Names.IntReg[rd]},{Names.IntReg[rs1]},{Names.IntReg[rs2]}";
     }
 
-    internal class SLT : IOp
+    internal class SLT : Op
     {
         private readonly int rd;
         private readonly int rs1;
@@ -781,7 +781,7 @@ namespace Rafi.RV32I
             this.rs2 = rs2;
         }
 
-        public void Execute(Core core)
+        public override void Execute(Core core)
         {
             var src1 = (int)core.IntReg[rs1];
             var src2 = (int)core.IntReg[rs2];
@@ -793,7 +793,7 @@ namespace Rafi.RV32I
             $"slt {Names.IntReg[rd]},{Names.IntReg[rs1]},{Names.IntReg[rs2]}";
     }
 
-    internal class SLTU : IOp
+    internal class SLTU : Op
     {
         private readonly int rd;
         private readonly int rs1;
@@ -806,7 +806,7 @@ namespace Rafi.RV32I
             this.rs2 = rs2;
         }
 
-        public void Execute(Core core)
+        public override void Execute(Core core)
         {
             var src1 = core.IntReg[rs1];
             var src2 = core.IntReg[rs2];
@@ -818,7 +818,7 @@ namespace Rafi.RV32I
             $"sltu {Names.IntReg[rd]},{Names.IntReg[rs1]},{Names.IntReg[rs2]}";
     }
 
-    internal class XOR : IOp
+    internal class XOR : Op
     {
         private readonly int rd;
         private readonly int rs1;
@@ -831,7 +831,7 @@ namespace Rafi.RV32I
             this.rs2 = rs2;
         }
 
-        public void Execute(Core core)
+        public override void Execute(Core core)
         {
             var src1 = core.IntReg[rs1];
             var src2 = core.IntReg[rs2];
@@ -843,7 +843,7 @@ namespace Rafi.RV32I
             $"xor {Names.IntReg[rd]},{Names.IntReg[rs1]},{Names.IntReg[rs2]}";
     }
 
-    internal class SRL : IOp
+    internal class SRL : Op
     {
         private readonly int rd;
         private readonly int rs1;
@@ -856,7 +856,7 @@ namespace Rafi.RV32I
             this.rs2 = rs2;
         }
 
-        public void Execute(Core core)
+        public override void Execute(Core core)
         {
             var src1 = core.IntReg[rs1];
             var src2 = (int)core.IntReg[rs2];
@@ -868,7 +868,7 @@ namespace Rafi.RV32I
             $"srl {Names.IntReg[rd]},{Names.IntReg[rs1]},{Names.IntReg[rs2]}";
     }
 
-    internal class SRA : IOp
+    internal class SRA : Op
     {
         private readonly int rd;
         private readonly int rs1;
@@ -881,7 +881,7 @@ namespace Rafi.RV32I
             this.rs2 = rs2;
         }
 
-        public void Execute(Core core)
+        public override void Execute(Core core)
         {
             var src1 = (int)core.IntReg[rs1];
             var src2 = (int)core.IntReg[rs2];
@@ -893,7 +893,7 @@ namespace Rafi.RV32I
             $"sra {Names.IntReg[rd]},{Names.IntReg[rs1]},{Names.IntReg[rs2]}";
     }
 
-    internal class OR : IOp
+    internal class OR : Op
     {
         private readonly int rd;
         private readonly int rs1;
@@ -906,7 +906,7 @@ namespace Rafi.RV32I
             this.rs2 = rs2;
         }
 
-        public void Execute(Core core)
+        public override void Execute(Core core)
         {
             var src1 = core.IntReg[rs1];
             var src2 = core.IntReg[rs2];
@@ -918,7 +918,7 @@ namespace Rafi.RV32I
             $"or {Names.IntReg[rd]},{Names.IntReg[rs1]},{Names.IntReg[rs2]}";
     }
 
-    internal class AND : IOp
+    internal class AND : Op
     {
         private readonly int rd;
         private readonly int rs1;
@@ -931,7 +931,7 @@ namespace Rafi.RV32I
             this.rs2 = rs2;
         }
 
-        public void Execute(Core core)
+        public override void Execute(Core core)
         {
             var src1 = core.IntReg[rs1];
             var src2 = core.IntReg[rs2];
@@ -943,7 +943,7 @@ namespace Rafi.RV32I
             $"and {Names.IntReg[rd]},{Names.IntReg[rs1]},{Names.IntReg[rs2]}";
     }
 
-    internal class FENCE : IOp
+    internal class FENCE : Op
     {
         private readonly int pred;
         private readonly int succ;
@@ -954,7 +954,7 @@ namespace Rafi.RV32I
             this.succ = succ;
         }
 
-        public void Execute(Core core)
+        public override void Execute(Core core)
         {
             throw new NotImplementedException();
         }
@@ -963,13 +963,13 @@ namespace Rafi.RV32I
             $"fence";
     }
 
-    internal class FENCE_I : IOp
+    internal class FENCE_I : Op
     {
         public FENCE_I()
         {
         }
 
-        public void Execute(Core core)
+        public override void Execute(Core core)
         {
             throw new NotImplementedException();
         }
@@ -978,37 +978,37 @@ namespace Rafi.RV32I
             $"fence.i";
     }
 
-    internal class ECALL : IOp
+    internal class ECALL : Op
     {
         public ECALL()
         {
         }
 
-        public void Execute(Core core)
+        public override Trap PostCheckTrap(Core core)
         {
-            throw new NotImplementedException();
+            return new EnvironmentCallFromMachineException(core.Pc);
         }
 
         public override string ToString() =>
             $"ecall";
     }
 
-    internal class EBREAK : IOp
+    internal class EBREAK : Op
     {
         public EBREAK()
         {
         }
 
-        public void Execute(Core core)
+        public override Trap PostCheckTrap(Core core)
         {
-            throw new NotImplementedException();
+            return new BreakpointException(core.Pc);
         }
 
         public override string ToString() =>
             $"ebreak";
     }
 
-    internal class CSRRW : IOp
+    internal class CSRRW : Op
     {
         private readonly int csr;
         private readonly int rd;
@@ -1021,7 +1021,7 @@ namespace Rafi.RV32I
             this.rs1 = rs1;
         }
 
-        public void Execute(Core core)
+        public override void Execute(Core core)
         {
             var value = core.Csr[csr];
 
@@ -1034,7 +1034,7 @@ namespace Rafi.RV32I
             $"csrrw {Names.IntReg[rd]},{Names.Csr[csr]},{Names.IntReg[rs1]}";
     }
 
-    internal class CSRRS : IOp
+    internal class CSRRS : Op
     {
         private readonly int csr;
         private readonly int rd;
@@ -1047,7 +1047,7 @@ namespace Rafi.RV32I
             this.rs1 = rs1;
         }
 
-        public void Execute(Core core)
+        public override void Execute(Core core)
         {
             var value = core.Csr[csr];
 
@@ -1061,7 +1061,7 @@ namespace Rafi.RV32I
             $"csrrs {Names.IntReg[rd]},{Names.Csr[csr]},{Names.IntReg[rs1]}";
     }
 
-    internal class CSRRC : IOp
+    internal class CSRRC : Op
     {
         private readonly int csr;
         private readonly int rd;
@@ -1074,7 +1074,7 @@ namespace Rafi.RV32I
             this.rs1 = rs1;
         }
 
-        public void Execute(Core core)
+        public override void Execute(Core core)
         {
             var value = core.Csr[csr];
 
@@ -1087,7 +1087,7 @@ namespace Rafi.RV32I
             $"csrrc {Names.IntReg[rd]},{Names.Csr[csr]},{Names.IntReg[rs1]}";
     }
 
-    internal class CSRRWI : IOp
+    internal class CSRRWI : Op
     {
         private readonly int csr;
         private readonly int rd;
@@ -1100,7 +1100,7 @@ namespace Rafi.RV32I
             this.zimm = zimm;
         }
 
-        public void Execute(Core core)
+        public override void Execute(Core core)
         {
             var value = core.Csr[csr];
 
@@ -1113,7 +1113,7 @@ namespace Rafi.RV32I
             $"csrrwi {Names.IntReg[rd]},{Names.Csr[csr]},{zimm}";
     }
 
-    internal class CSRRSI : IOp
+    internal class CSRRSI : Op
     {
         private readonly int csr;
         private readonly int rd;
@@ -1126,7 +1126,7 @@ namespace Rafi.RV32I
             this.zimm = zimm;
         }
 
-        public void Execute(Core core)
+        public override void Execute(Core core)
         {
             var value = core.Csr[csr];
 
@@ -1139,7 +1139,7 @@ namespace Rafi.RV32I
             $"csrrsi {Names.IntReg[rd]},{Names.Csr[csr]},{zimm}";
     }
 
-    internal class CSRRCI : IOp
+    internal class CSRRCI : Op
     {
         private readonly int csr;
         private readonly int rd;
@@ -1152,7 +1152,7 @@ namespace Rafi.RV32I
             this.zimm = zimm;
         }
 
-        public void Execute(Core core)
+        public override void Execute(Core core)
         {
             var value = core.Csr[csr];
 

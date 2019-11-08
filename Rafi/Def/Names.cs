@@ -2,7 +2,7 @@
 
 namespace Rafi
 {
-    public class Names
+    internal class Names
     {
         public static string[] Csr { get; } = new string[0x1000];
 

@@ -27,7 +27,19 @@ namespace Rafi
 
             op.Execute(Core);
 
+            var trap = op.PostCheckTrap(Core);
+            if (trap != null)
+            {
+                ProcessTrap(trap);
+                return;
+            }
+
             Core.Pc = Core.NextPc;
+        }
+
+        private void ProcessTrap(Trap trap)
+        {
+            throw new NotImplementedException();
         }
     }
 }
