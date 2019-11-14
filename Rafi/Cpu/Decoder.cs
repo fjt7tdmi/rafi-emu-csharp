@@ -173,7 +173,27 @@ namespace Rafi
                         return ThrowUnknownInsnException(insn);
                     }
                 case 0b1110011:
-                    if (i.imm == 0b0000_0000_0000 && i.rs1 == 0b00000 && i.funct3 == 0b000 && i.rd == 0b00000)
+                    if (i.imm == 0b0000_0000_0010 && r.rs1 == 0b00000 && r.funct3 == 0b000 && r.rd == 0b00000)
+                    {
+                        return new RV32I.URET();
+                    }
+                    else if (i.imm == 0b0001_0000_0010 && r.rs1 == 0b00000 && r.funct3 == 0b000 && r.rd == 0b00000)
+                    {
+                        return new RV32I.SRET();
+                    }
+                    else if (i.imm == 0b0011_0000_0010 && r.rs1 == 0b00000 && r.funct3 == 0b000 && r.rd == 0b00000)
+                    {
+                        return new RV32I.MRET();
+                    }
+                    else if (i.imm == 0b0001_0000_0101 && r.rs1 == 0b00000 && r.funct3 == 0b000 && r.rd == 0b00000)
+                    {
+                        return new RV32I.WFI();
+                    }
+                    else if (i.imm == 0b0001_0000_0101 && r.rs1 == 0b00000 && r.funct3 == 0b000 && r.rd == 0b00000)
+                    {
+                        return new RV32I.SFENCE_VMA(r.rs1, r.rs2);
+                    }
+                    else if (i.imm == 0b0000_0000_0000 && i.rs1 == 0b00000 && i.funct3 == 0b000 && i.rd == 0b00000)
                     {
                         return new RV32I.ECALL();
                     }

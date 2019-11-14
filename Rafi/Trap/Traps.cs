@@ -20,10 +20,16 @@ namespace Rafi
 
         protected Trap(ExceptionType exceptionType, uint pc, uint value = 0)
         {
-            TrapType = TrapType.Interrupt;
+            TrapType = TrapType.Exception;
             Exception = exceptionType;
             Pc = pc;
             Value = value;
+        }
+
+        protected Trap(TrapType trapType, uint pc)
+        {
+            TrapType = trapType;
+            Pc = pc;
         }
     }
 
@@ -39,6 +45,14 @@ namespace Rafi
     {
         public EnvironmentCallFromMachineException(uint pc)
             : base(ExceptionType.EnvironmentCallFromMachine, pc)
+        {
+        }
+    }
+
+    internal class TrapReturn : Trap
+    {
+        public TrapReturn(uint pc)
+            : base(TrapType.Return, pc)
         {
         }
     }

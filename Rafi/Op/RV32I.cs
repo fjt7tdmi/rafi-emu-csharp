@@ -956,7 +956,6 @@ namespace Rafi.RV32I
 
         public override void Execute(Core core)
         {
-            throw new NotImplementedException();
         }
 
         public override string ToString() =>
@@ -971,7 +970,6 @@ namespace Rafi.RV32I
 
         public override void Execute(Core core)
         {
-            throw new NotImplementedException();
         }
 
         public override string ToString() =>
@@ -1163,5 +1161,85 @@ namespace Rafi.RV32I
         public override string ToString() =>
             (rd == 0) ? $"csrci {Names.Csr[csr]},{zimm}" :
             $"csrrci {Names.IntReg[rd]},{Names.Csr[csr]},{zimm}";
+    }
+
+    internal class URET : Op
+    {
+        public URET()
+        {
+        }
+
+        public override Trap PostCheckTrap(Core core)
+        {
+            return new TrapReturn(core.Pc);
+        }
+
+        public override string ToString() =>
+            $"uret";
+    }
+
+    internal class SRET : Op
+    {
+        public SRET()
+        {
+        }
+
+        public override Trap PostCheckTrap(Core core)
+        {
+            return new TrapReturn(core.Pc);
+        }
+
+        public override string ToString() =>
+            $"sret";
+    }
+
+    internal class MRET : Op
+    {
+        public MRET()
+        {
+        }
+
+        public override Trap PostCheckTrap(Core core)
+        {
+            return new TrapReturn(core.Pc);
+        }
+
+        public override string ToString() =>
+            $"mret";
+    }
+
+    internal class WFI : Op
+    {
+        public WFI()
+        {
+        }
+
+        public override void Execute(Core core)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override string ToString() =>
+            $"wfi";
+    }
+
+    internal class SFENCE_VMA : Op
+    {
+        private readonly int rs1;
+        private readonly int rs2;
+
+        public SFENCE_VMA(int rs1, int rs2)
+        {
+            this.rs1 = rs1;
+            this.rs2 = rs2;
+        }
+
+        public override void Execute(Core core)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override string ToString() =>
+            $"sfence.vma {Names.IntReg[rs1]},{Names.IntReg[rs2]}";
     }
 }
