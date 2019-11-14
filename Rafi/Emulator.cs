@@ -13,6 +13,8 @@ namespace Rafi
             get => processor.Core;
         }
 
+        public uint HostIoAddr { get; set; } = 0x80001000;
+
         public uint Pc
         {
             set => processor.Core.Pc = value;
@@ -34,7 +36,28 @@ namespace Rafi
         {
             for (int i = 0; i < cycle; i++)
             {
+                if (GetHostIoValue() != 0)
+                {
+                    break;
+                }
+
                 processor.ProcessCycle();
+            }
+
+            PrintHostIoValue(GetHostIoValue());
+        }
+
+        private uint GetHostIoValue() => bus.ReadUInt32(HostIoAddr);
+
+        private void PrintHostIoValue(uint value)
+        {
+            if (value == 1)
+            {
+                Console.WriteLine($"HostIo: {value} (success)");
+            }
+            else
+            {
+                Console.WriteLine($"HostIo: {value} (failure: testId={value / 2})");
             }
         }
     }
