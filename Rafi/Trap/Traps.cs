@@ -7,6 +7,7 @@ namespace Rafi
         public TrapType TrapType { get; }
         public InterruptType? Interrupt { get; }
         public ExceptionType? Exception { get; }
+        public uint Cause { get; }
         public uint Pc { get; }
         public uint Value { get; }
 
@@ -14,6 +15,7 @@ namespace Rafi
         {
             TrapType = TrapType.Interrupt;
             Interrupt = interruptType;
+            Cause = (uint)interruptType;
             Pc = pc;
             Value = value;
         }
@@ -22,6 +24,7 @@ namespace Rafi
         {
             TrapType = TrapType.Exception;
             Exception = exceptionType;
+            Cause = (uint)exceptionType;
             Pc = pc;
             Value = value;
         }

@@ -4,6 +4,11 @@ namespace Rafi
 {
     internal class MSTATUS : CsrDef
     {
+        public MSTATUS()
+            : base(0)
+        {
+        }
+
         public MSTATUS(uint value)
             : base(value)
         {
@@ -129,5 +134,77 @@ namespace Rafi
             get => Get(0);
             set => Set(0, value);
         }
+    }
+
+    internal class MTVEC : CsrDef
+    {
+        public MTVEC()
+            : base(0)
+        {
+        }
+
+        public MTVEC(uint value)
+            : base(value)
+        {
+        }
+
+        public override CsrAddr CsrAddr { get; } = CsrAddr.MTVEC;
+
+        public uint BASE
+        {
+            get => Get(31, 2);
+            set => Set(31, 2, value);
+        }
+
+        public uint MODE
+        {
+            get => Get(1, 0);
+            set => Set(1, 0, value);
+        }
+    }
+
+    internal class MEPC : CsrDef
+    {
+        public MEPC()
+            : base(0)
+        {
+        }
+
+        public MEPC(uint value)
+            : base(value)
+        {
+        }
+
+        public override CsrAddr CsrAddr { get; } = CsrAddr.MEPC;
+    }
+
+    internal class MCAUSE : CsrDef
+    {
+        public MCAUSE()
+            : base(0)
+        {
+        }
+
+        public MCAUSE(uint value)
+            : base(value)
+        {
+        }
+
+        public override CsrAddr CsrAddr { get; } = CsrAddr.MCAUSE;
+    }
+
+    internal class MTVAL : CsrDef
+    {
+        public MTVAL()
+            : base(0)
+        {
+        }
+
+        public MTVAL(uint value)
+            : base(value)
+        {
+        }
+
+        public override CsrAddr CsrAddr { get; } = CsrAddr.MTVAL;
     }
 }
