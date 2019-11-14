@@ -13,6 +13,11 @@ namespace Rafi
             get => processor.Core;
         }
 
+        public uint Pc
+        {
+            set => processor.Core.Pc = value;
+        }
+
         public Emulator()
         {
             memory = new Memory();

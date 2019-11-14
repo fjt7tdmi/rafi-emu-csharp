@@ -13,6 +13,7 @@ namespace RafiEmu
             Parser.Default.ParseArguments<CommandLineOption>(args)
                 .WithParsed(option =>
                 {
+                    emulator.Pc = option.Pc;
                     emulator.LoadToMemory(option.Load);
                     emulator.Process(option.Cycle);
                 });

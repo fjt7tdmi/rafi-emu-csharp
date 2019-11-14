@@ -5,6 +5,7 @@ namespace Rafi
     internal class Processor
     {
         private readonly Decoder decoder = new Decoder();
+        private readonly Logger logger = new Logger();
 
         private readonly Bus bus;
 
@@ -22,6 +23,8 @@ namespace Rafi
             var insn = bus.ReadUInt32(Core.Pc);
 
             var op = decoder.Decode(insn);
+
+            logger.Trace($"{Core.Pc:x} {op}");
 
             Core.NextPc = Core.Pc + 4;
 
