@@ -44,9 +44,8 @@ namespace Rafi
                         case 0b111:
                             return new RV32I.BGEU(b.rs1, b.rs2, b.imm);
                         default:
-                            break;
+                            return ThrowUnknownInsnException(insn);
                     }
-                    break;
                 case 0b0000011:
                     switch (i.funct3)
                     {
@@ -61,9 +60,8 @@ namespace Rafi
                         case 0b101:
                             return new RV32I.LHU(i.rd, i.rs1, i.imm);
                         default:
-                            break;
+                            return ThrowUnknownInsnException(insn);
                     }
-                    break;
                 case 0b0100011:
                     switch (s.funct3)
                     {
@@ -74,42 +72,50 @@ namespace Rafi
                         case 0b010:
                             return new RV32I.SW(s.rs1, s.rs2, s.imm);
                         default:
-                            break;
+                            return ThrowUnknownInsnException(insn);
                     }
-                    break;
                 case 0b0010011:
                     switch (i.funct3)
                     {
                         case 0b000:
                             return new RV32I.ADDI(i.rd, i.rs1, i.imm);
+                        case 0b001:
+                            if (r.funct7 == 0b0000000)
+                            {
+                                return new RV32I.SLLI(r.rd, r.rs1, r.rs2);
+                            }
+                            else
+                            {
+                                return ThrowUnknownInsnException(insn);
+                            }
                         case 0b010:
                             return new RV32I.SLTI(i.rd, i.rs1, i.imm);
                         case 0b011:
                             return new RV32I.SLTIU(i.rd, i.rs1, i.imm);
                         case 0b100:
                             return new RV32I.XORI(i.rd, i.rs1, i.imm);
+                        case 0b101:
+                            if (r.funct3 == 0b101 && r.funct7 == 0b0000000)
+                            {
+                                return new RV32I.SRLI(r.rd, r.rs1, r.rs2);
+                            }
+                            else if (r.funct3 == 0b101 && r.funct7 == 0b0100000)
+                            {
+                                return new RV32I.SRAI(r.rd, r.rs1, r.rs2);
+                            }
+                            else
+                            {
+                                return ThrowUnknownInsnException(insn);
+                            }
                         case 0b110:
                             return new RV32I.ORI(i.rd, i.rs1, i.imm);
                         case 0b111:
                             return new RV32I.ANDI(i.rd, i.rs1, i.imm);
                         default:
-                            break;
+                            return ThrowUnknownInsnException(insn);
                     }
-                    break;
-                case 0b0110011:                    
-                    if (r.funct3 == 0b001 && r.funct7 == 0b0000000)
-                    {
-                        return new RV32I.SLLI(r.rd, r.rs1, r.rs2);
-                    }
-                    else if (r.funct3 == 0b101 && r.funct7 == 0b0000000)
-                    {
-                        return new RV32I.SRLI(r.rd, r.rs1, r.rs2);
-                    }
-                    else if (r.funct3 == 0b101 && r.funct7 == 0b0100000)
-                    {
-                        return new RV32I.SRAI(r.rd, r.rs1, r.rs2);
-                    }
-                    else if (r.funct3 == 0b000 && r.funct7 == 0b0000000)
+                case 0b0110011:
+                    if (r.funct3 == 0b000 && r.funct7 == 0b0000000)
                     {
                         return new RV32I.ADD(r.rd, r.rs1, r.rs2);
                     }
@@ -151,7 +157,7 @@ namespace Rafi
                     }
                     else
                     {
-                        break;
+                        return ThrowUnknownInsnException(insn);
                     }
                 case 0b0001111:
                     if (i.rs1 == 0b00000 && i.funct3 == 0b000 && i.rd == 0b00000 && Utils.Pick(insn, 28, 4) == 0b0000)
@@ -164,7 +170,7 @@ namespace Rafi
                     }
                     else
                     {
-                        break;
+                        return ThrowUnknownInsnException(insn);
                     }
                 case 0b1110011:
                     if (i.imm == 0b0000_0000_0000 && i.rs1 == 0b00000 && i.funct3 == 0b000 && i.rd == 0b00000)
@@ -192,14 +198,16 @@ namespace Rafi
                             case 0b111:
                                 return new RV32I.CSRRCI(i_csr.csr, i_csr.rd, i_csr.zimm);
                             default:
-                                break;
+                                return ThrowUnknownInsnException(insn);
                         }
-                        break;
                     }
                 default:
-                    break;
+                    return ThrowUnknownInsnException(insn);
             }
+        }
 
+        private Op ThrowUnknownInsnException(uint insn)
+        {
             throw new FormatException($"Unknown insn 0x{insn:x}");
         }
 
