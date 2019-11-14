@@ -15,7 +15,7 @@ namespace Rafi
 
         public uint Get(int msb, int lsb)
         {
-            var width = msb - lsb;
+            var width = msb - lsb + 1;
             var mask = ((1u << width) - 1u) << lsb;
 
             return (Value & mask) >> lsb;
@@ -25,7 +25,7 @@ namespace Rafi
 
         public void Set(int msb, int lsb, uint value)
         {
-            var width = msb - lsb;
+            var width = msb - lsb + 1;
             var mask = ((1u << width) - 1u) << lsb;
 
             Value = (Value & ~mask) | ((value << lsb) & mask);
