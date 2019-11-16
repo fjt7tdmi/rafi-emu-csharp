@@ -5,9 +5,14 @@ VisualStudioVersion = 16.0.29418.71
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RafiEmu", "RafiEmu\RafiEmu.csproj", "{44DAC9D3-4DF1-443F-A675-42AEBF900D02}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rafi", "Rafi\Rafi.csproj", "{F85A9F82-0381-4F69-9E4D-7F038FF91D50}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rafi", "Rafi\Rafi.csproj", "{F85A9F82-0381-4F69-9E4D-7F038FF91D50}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rafi.Test", "Rafi.Test\Rafi.Test.csproj", "{AFAC683A-0EA1-4DBB-86AB-A4CC4E5EE576}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rafi.Test", "Rafi.Test\Rafi.Test.csproj", "{AFAC683A-0EA1-4DBB-86AB-A4CC4E5EE576}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C89804CD-4BAF-45B5-96DE-0C75E1E8B67D}"
+	ProjectSection(SolutionItems) = preProject
+		run_riscv_tests.csx = run_riscv_tests.csx
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
