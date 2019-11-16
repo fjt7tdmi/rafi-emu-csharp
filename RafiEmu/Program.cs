@@ -16,6 +16,8 @@ namespace RafiEmu
                     emulator.Pc = option.Pc;
                     emulator.LoadToMemory(option.Load);
                     emulator.Process(option.Cycle);
+                    
+                    Environment.Exit(0);
                 });
         }
     }

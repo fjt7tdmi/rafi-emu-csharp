@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 
-var envName = "RISCV_TESTS";
+var envName = "RAFI_EMU";
 var rafiEmu = Path.GetFullPath("RafiEmu/bin/Debug/netcoreapp3.0/RafiEmu.exe");
 
 var dir = Environment.GetEnvironmentVariable(envName);
@@ -25,11 +25,11 @@ using (var reader = new StreamReader(stream))
         var line = reader.ReadLine();
         if (string.IsNullOrWhiteSpace(line))
         {
-            continue;
+            break;
         }
 
-        var file = line.TrimEnd();
-        var path = Path.Combine(dir, "build", "isa", file);
+        var file = line.TrimEnd() + ".bin";
+        var path = Path.Combine(dir, "work", "riscv-tests", file);
         var arguments = $"-c 1000 -l {path}";
 
         Console.WriteLine($"RafiEmu {arguments}");
@@ -41,10 +41,10 @@ using (var reader = new StreamReader(stream))
         process.StartInfo.UseShellExecute = false;
         process.StartInfo.RedirectStandardOutput = true;
         process.StartInfo.RedirectStandardError = true;
+        process.StartInfo.RedirectStandardInput = true;
         process.Start();
-        process.WaitForExit();
+        process.StandardInput.Close();
 
-        Console.WriteLine(process.StandardError.ReadToEnd());
         Console.WriteLine(process.StandardOutput.ReadToEnd());
     }
 }

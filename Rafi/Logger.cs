@@ -6,7 +6,9 @@ namespace Rafi
     {
         public void Trace(string message)
         {
+#if false
             Console.WriteLine(message);
+#endif
         }
     }
 }
