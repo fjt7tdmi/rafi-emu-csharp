@@ -15,6 +15,6 @@ namespace RafiEmu
         public uint Pc { get; set; } = 0x80000000;
 
         [Option("gdb", Required = false, HelpText = "TCP port number of gdbserver")]
-        public int GdbPort { get; set; }
+        public int GdbPort { get; set; } = 0;
     }
 }

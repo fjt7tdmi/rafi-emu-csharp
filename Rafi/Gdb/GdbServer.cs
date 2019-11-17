@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Rafi
 {
-    internal class GdbServer : IDisposable
+    public class GdbServer : IDisposable
     {
         private readonly Emulator emulator;
         private readonly TcpListener tcpListener;
@@ -37,6 +37,8 @@ namespace Rafi
                     cancellationTokenSource.Cancel();
 
                     tcpListener.Stop();
+                    
+                    task.Wait();
                     task.Dispose();
 
                     cancellationTokenSource.Dispose();
