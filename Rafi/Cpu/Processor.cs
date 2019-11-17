@@ -5,7 +5,7 @@ namespace Rafi
     internal class Processor
     {
         private readonly Decoder decoder = new Decoder();
-        private readonly Logger logger = new Logger();
+        private readonly Logger logger = new Logger("cpu");
 
         private readonly Bus bus;
 

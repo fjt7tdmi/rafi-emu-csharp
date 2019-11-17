@@ -8,6 +8,8 @@ namespace Rafi
 {
     internal class GdbSession
     {
+        private readonly Logger logger = new Logger("gdb");
+
         private readonly Emulator emulator;
 
         public GdbSession(Emulator emulator)
@@ -17,13 +19,29 @@ namespace Rafi
 
         public void Process(StreamReader reader, StreamWriter writer)
         {
-            var command = ReadCommand(reader);
+            logger.Info($"{nameof(GdbSession)} started.");
 
-            SendAck(writer);
+            try
+            {
+                while (true)
+                {
+                    var command = ReadCommand(reader);
 
-            ProcessCommand(writer, command);
+                    SendAck(writer);
 
-            writer.Flush();
+                    ProcessCommand(writer, command);
+
+                    writer.Flush();
+                }
+            }
+            catch (IOException)
+            {
+                // Normal connection close
+            }
+            finally
+            {
+                logger.Info($"{nameof(GdbSession)} finished.");
+            }
         }
 
         private int CalcChecksum(string s) => CalcChecksum(s.ToCharArray().Select(x => (int)x));
@@ -118,7 +136,11 @@ namespace Rafi
                 throw new IOException($"Checksum error. expected={CalcChecksum(list)} actual={checksum}");
             }
 
-            return Encoding.UTF8.GetString(list.Select(x => (byte)x).ToArray());
+            var command = Encoding.UTF8.GetString(list.Select(x => (byte)x).ToArray());
+
+            logger.Trace($"[recv] {command}");
+
+            return command;
         }
 
         private int ReadChar(StreamReader reader)
@@ -237,6 +259,8 @@ namespace Rafi
             var checksum = (byte)CalcChecksum(response);
 
             writer.Write($"${response}#{ConvertToHex(checksum):x2}");
+
+            logger.Trace($"[send] {response}");
         }
     }
 }
