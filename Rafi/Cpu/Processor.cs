@@ -20,15 +20,15 @@ namespace Rafi
 
         public void ProcessCycle()
         {
-            var insn = bus.ReadUInt32(Core.Pc);
+            var insn = bus.ReadUInt32(Core.Pc32);
 
             try
             {
                 var op = decoder.Decode(insn);
 
-                logger.Trace($"{Core.Pc:x} {op}");
+                logger.Trace($"{Core.Pc32:x} {op}");
 
-                Core.NextPc = Core.Pc + 4;
+                Core.NextPc32 = Core.Pc32 + 4;
 
                 op.Execute(Core);
 
@@ -41,7 +41,7 @@ namespace Rafi
             }
             finally
             {
-                Core.Pc = Core.NextPc;
+                Core.Pc32 = Core.NextPc32;
             }
         }
 
@@ -62,32 +62,32 @@ namespace Rafi
 
         private void ProcessException(Trap trap)
         {
-            var mtvec = Core.Csr.Read<MTVEC>();
-            var mstatus = Core.Csr.Read<MSTATUS>();
+            var mtvec = Core.Csr64.Read<MTVEC>();
+            var mstatus = Core.Csr64.Read<MSTATUS>();
 
             mstatus.MPIE = mstatus.MIE;
             mstatus.MIE = 0;
             mstatus.MPP = 3; // PrivilegeLevel.Machine
 
-            Core.Csr.Write(mstatus);
-            Core.Csr.Write(new MCAUSE(trap.Cause));
-            Core.Csr.Write(new MEPC(trap.Pc));
-            Core.Csr.Write(new MTVAL(trap.Value));
+            Core.Csr64.Write(mstatus);
+            Core.Csr64.Write(new MCAUSE(trap.Cause));
+            Core.Csr64.Write(new MEPC(trap.Pc));
+            Core.Csr64.Write(new MTVAL(trap.Value));
 
-            Core.NextPc = mtvec.BASE * 4;
+            Core.NextPc64 = mtvec.BASE * 4;
         }
 
         private void ProcessTrapReturn(Trap trap)
         {
-            var mstatus = Core.Csr.Read<MSTATUS>();
-            var mepc = Core.Csr.Read<MEPC>();
+            var mstatus = Core.Csr64.Read<MSTATUS>();
+            var mepc = Core.Csr64.Read<MEPC>();
 
             mstatus.MPP = 0;
             mstatus.MIE = mstatus.MPIE;
 
-            Core.Csr.Write(mstatus);
+            Core.Csr64.Write(mstatus);
 
-            Core.NextPc = mepc.Value;
+            Core.NextPc64 = mepc.Value;
         }
     }
 }

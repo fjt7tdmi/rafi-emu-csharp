@@ -15,7 +15,9 @@ namespace Rafi.RV32I
 
         public override void Execute(Core core)
         {
-            core.IntReg[rd] = imm;
+            var x = core.IntReg32;
+
+            x[rd] = imm;
         }
 
         public override string ToString() =>
@@ -35,7 +37,9 @@ namespace Rafi.RV32I
 
         public override void Execute(Core core)
         {
-            core.IntReg[rd] = core.Pc + imm;
+            var x = core.IntReg32;
+
+            x[rd] = core.Pc32 + imm;
         }
 
         public override string ToString() =>
@@ -55,10 +59,11 @@ namespace Rafi.RV32I
 
         public override void Execute(Core core)
         {
-            var nextPc = core.NextPc;
+            var x = core.IntReg32;
+            var nextPc = core.NextPc32;
 
-            core.NextPc = core.Pc + imm;
-            core.IntReg[rd] = nextPc;
+            core.NextPc32 = core.Pc32 + imm;
+            x[rd] = nextPc;
         }
 
         public override string ToString() =>
@@ -81,10 +86,11 @@ namespace Rafi.RV32I
 
         public override void Execute(Core core)
         {
-            var nextPc = core.NextPc;
+            var x = core.IntReg32;
+            var nextPc = core.NextPc32;
 
-            core.NextPc = core.IntReg[rs1] + imm;
-            core.IntReg[rd] = nextPc;
+            core.NextPc32 = x[rs1] + imm;
+            x[rd] = nextPc;
         }
 
         public override string ToString() =>
@@ -107,12 +113,11 @@ namespace Rafi.RV32I
 
         public override void Execute(Core core)
         {
-            var src1 = core.IntReg[rs1];
-            var src2 = core.IntReg[rs2];
+            var x = core.IntReg32;
 
-            if (src1 == src2)
+            if (x[rs1] == x[rs2])
             {
-                core.NextPc = core.Pc + imm;
+                core.NextPc32 = core.Pc32 + imm;
             }
         }
 
@@ -137,12 +142,11 @@ namespace Rafi.RV32I
 
         public override void Execute(Core core)
         {
-            var src1 = core.IntReg[rs1];
-            var src2 = core.IntReg[rs2];
+            var x = core.IntReg32;
 
-            if (src1 != src2)
+            if (x[rs1] != x[rs2])
             {
-                core.NextPc = core.Pc + imm;
+                core.NextPc32 = core.Pc32 + imm;
             }
         }
 
@@ -167,12 +171,11 @@ namespace Rafi.RV32I
 
         public override void Execute(Core core)
         {
-            var src1 = (int)core.IntReg[rs1];
-            var src2 = (int)core.IntReg[rs2];
+            var x = core.IntReg32;
 
-            if (src1 < src2)
+            if ((int)x[rs1] < (int)x[rs2])
             {
-                core.NextPc = core.Pc + imm;
+                core.NextPc32 = core.Pc32 + imm;
             }
         }
 
@@ -197,12 +200,11 @@ namespace Rafi.RV32I
 
         public override void Execute(Core core)
         {
-            var src1 = (int)core.IntReg[rs1];
-            var src2 = (int)core.IntReg[rs2];
+            var x = core.IntReg32;
 
-            if (src1 >= src2)
+            if ((int)x[rs1] >= (int)x[rs2])
             {
-                core.NextPc = core.Pc + imm;
+                core.NextPc32 = core.Pc32 + imm;
             }
         }
 
@@ -227,12 +229,11 @@ namespace Rafi.RV32I
 
         public override void Execute(Core core)
         {
-            var src1 = core.IntReg[rs1];
-            var src2 = core.IntReg[rs2];
+            var x = core.IntReg32;
 
-            if (src1 < src2)
+            if (x[rs1] < x[rs2])
             {
-                core.NextPc = core.Pc + imm;
+                core.NextPc32 = core.Pc32 + imm;
             }
         }
 
@@ -255,12 +256,11 @@ namespace Rafi.RV32I
 
         public override void Execute(Core core)
         {
-            var src1 = core.IntReg[rs1];
-            var src2 = core.IntReg[rs2];
+            var x = core.IntReg32;
 
-            if (src1 >= src2)
+            if (x[rs1] >= x[rs2])
             {
-                core.NextPc = core.Pc + imm;
+                core.NextPc32 = core.Pc32 + imm;
             }
         }
 
@@ -283,10 +283,11 @@ namespace Rafi.RV32I
 
         public override void Execute(Core core)
         {
-            var addr = core.IntReg[rs1] + imm;
+            var x = core.IntReg32;
+            var addr = x[rs1] + imm;
             var value = core.Bus.ReadUInt8(addr);
 
-            core.IntReg[rd] = Utils.SignExtend(8, value);
+            x[rd] = Utils.SignExtend(8, value);
         }
 
         public override string ToString() =>
@@ -308,10 +309,11 @@ namespace Rafi.RV32I
 
         public override void Execute(Core core)
         {
-            var addr = core.IntReg[rs1] + imm;
+            var x = core.IntReg32;
+            var addr = x[rs1] + imm;
             var value = core.Bus.ReadUInt16(addr);
 
-            core.IntReg[rd] = Utils.SignExtend(16, value);
+            x[rd] = Utils.SignExtend(16, value);
         }
 
         public override string ToString() =>
@@ -333,10 +335,11 @@ namespace Rafi.RV32I
 
         public override void Execute(Core core)
         {
-            var addr = core.IntReg[rs1] + imm;
+            var x = core.IntReg32;
+            var addr = x[rs1] + imm;
             var value = core.Bus.ReadUInt32(addr);
 
-            core.IntReg[rd] = value;
+            x[rd] = value;
         }
 
         public override string ToString() =>
@@ -358,10 +361,11 @@ namespace Rafi.RV32I
 
         public override void Execute(Core core)
         {
-            var addr = core.IntReg[rs1] + imm;
+            var x = core.IntReg32;
+            var addr = x[rs1] + imm;
             var value = core.Bus.ReadUInt8(addr);
 
-            core.IntReg[rd] = Utils.ZeroExtend(8, value);
+            x[rd] = Utils.ZeroExtend(8, value);
         }
 
         public override string ToString() =>
@@ -383,10 +387,11 @@ namespace Rafi.RV32I
 
         public override void Execute(Core core)
         {
-            var addr = core.IntReg[rs1] + imm;
+            var x = core.IntReg32;
+            var addr = x[rs1] + imm;
             var value = core.Bus.ReadUInt16(addr);
 
-            core.IntReg[rd] = Utils.ZeroExtend(16, value);
+            x[rd] = Utils.ZeroExtend(16, value);
         }
 
         public override string ToString() =>
@@ -408,8 +413,9 @@ namespace Rafi.RV32I
 
         public override void Execute(Core core)
         {
-            var addr = core.IntReg[rs1] + imm;
-            var value = (byte)core.IntReg[rs2];
+            var x = core.IntReg32;
+            var addr = x[rs1] + imm;
+            var value = (byte)x[rs2];
 
             core.Bus.WriteUInt8(addr, value);
         }
@@ -433,8 +439,9 @@ namespace Rafi.RV32I
 
         public override void Execute(Core core)
         {
-            var addr = core.IntReg[rs1] + imm;
-            var value = (ushort)core.IntReg[rs2];
+            var x = core.IntReg32;
+            var addr = x[rs1] + imm;
+            var value = (ushort)x[rs2];
 
             core.Bus.WriteUInt16(addr, value);
         }
@@ -458,8 +465,9 @@ namespace Rafi.RV32I
 
         public override void Execute(Core core)
         {
-            var addr = core.IntReg[rs1] + imm;
-            var value = (ushort)core.IntReg[rs2];
+            var x = core.IntReg32;
+            var addr = x[rs1] + imm;
+            var value = (ushort)x[rs2];
 
             core.Bus.WriteUInt32(addr, value);
         }
@@ -483,10 +491,11 @@ namespace Rafi.RV32I
 
         public override void Execute(Core core)
         {
-            var src1 = core.IntReg[rs1];
+            var x = core.IntReg32;
+            var src1 = x[rs1];
             var value = src1 + imm;
             
-            core.IntReg[rd] = value;
+            x[rd] = value;
         }
 
         public override string ToString() =>
@@ -508,10 +517,11 @@ namespace Rafi.RV32I
 
         public override void Execute(Core core)
         {
-            var src1 = (int)core.IntReg[rs1];
+            var x = core.IntReg32;
+            var src1 = (int)x[rs1];
             var value = (src1 < (int)imm) ? 1u : 0u;
 
-            core.IntReg[rd] = value;
+            x[rd] = value;
         }
 
         public override string ToString() =>
@@ -533,10 +543,11 @@ namespace Rafi.RV32I
 
         public override void Execute(Core core)
         {
-            var src1 = core.IntReg[rs1];
+            var x = core.IntReg32;
+            var src1 = x[rs1];
             var value = (src1 < imm) ? 1u : 0u;
 
-            core.IntReg[rd] = value;
+            x[rd] = value;
         }
 
         public override string ToString() =>
@@ -558,10 +569,11 @@ namespace Rafi.RV32I
 
         public override void Execute(Core core)
         {
-            var src1 = core.IntReg[rs1];
+            var x = core.IntReg32;
+            var src1 = x[rs1];
             var value = src1 ^ imm;
 
-            core.IntReg[rd] = value;
+            x[rd] = value;
         }
 
         public override string ToString() =>
@@ -583,10 +595,11 @@ namespace Rafi.RV32I
 
         public override void Execute(Core core)
         {
-            var src1 = core.IntReg[rs1];
+            var x = core.IntReg32;
+            var src1 = x[rs1];
             var value = src1 | imm;
 
-            core.IntReg[rd] = value;
+            x[rd] = value;
         }
 
         public override string ToString() =>
@@ -608,10 +621,11 @@ namespace Rafi.RV32I
 
         public override void Execute(Core core)
         {
-            var src1 = core.IntReg[rs1];
+            var x = core.IntReg32;
+            var src1 = x[rs1];
             var value = src1 & imm;
 
-            core.IntReg[rd] = value;
+            x[rd] = value;
         }
 
         public override string ToString() =>
@@ -633,10 +647,11 @@ namespace Rafi.RV32I
 
         public override void Execute(Core core)
         {
-            var src1 = core.IntReg[rs1];
+            var x = core.IntReg32;
+            var src1 = x[rs1];
             var value = src1 << shamt;
 
-            core.IntReg[rd] = value;
+            x[rd] = value;
         }
 
         public override string ToString() =>
@@ -658,10 +673,11 @@ namespace Rafi.RV32I
 
         public override void Execute(Core core)
         {
-            var src1 = core.IntReg[rs1];
+            var x = core.IntReg32;
+            var src1 = x[rs1];
             var value = src1 >> shamt;
 
-            core.IntReg[rd] = value;
+            x[rd] = value;
         }
 
         public override string ToString() =>
@@ -683,10 +699,11 @@ namespace Rafi.RV32I
 
         public override void Execute(Core core)
         {
-            var src1 = (int)core.IntReg[rs1];
+            var x = core.IntReg32;
+            var src1 = (int)x[rs1];
             var value = src1 >> shamt;
 
-            core.IntReg[rd] = (uint)value;
+            x[rd] = (uint)value;
         }
 
         public override string ToString() =>
@@ -708,10 +725,11 @@ namespace Rafi.RV32I
 
         public override void Execute(Core core)
         {
-            var src1 = core.IntReg[rs1];
-            var src2 = core.IntReg[rs2];
+            var x = core.IntReg32;
+            var src1 = x[rs1];
+            var src2 = x[rs2];
 
-            core.IntReg[rd] = src1 + src2;
+            x[rd] = src1 + src2;
         }
 
         public override string ToString() =>
@@ -733,10 +751,11 @@ namespace Rafi.RV32I
 
         public override void Execute(Core core)
         {
-            var src1 = core.IntReg[rs1];
-            var src2 = core.IntReg[rs2];
+            var x = core.IntReg32;
+            var src1 = x[rs1];
+            var src2 = x[rs2];
 
-            core.IntReg[rd] = src1 - src2;
+            x[rd] = src1 - src2;
         }
 
         public override string ToString() =>
@@ -758,10 +777,11 @@ namespace Rafi.RV32I
 
         public override void Execute(Core core)
         {
-            var src1 = core.IntReg[rs1];
-            var src2 = (int)core.IntReg[rs2];
+            var x = core.IntReg32;
+            var src1 = x[rs1];
+            var src2 = (int)x[rs2];
 
-            core.IntReg[rd] = src1 << src2;
+            x[rd] = src1 << src2;
         }
 
         public override string ToString() =>
@@ -783,10 +803,11 @@ namespace Rafi.RV32I
 
         public override void Execute(Core core)
         {
-            var src1 = (int)core.IntReg[rs1];
-            var src2 = (int)core.IntReg[rs2];
+            var x = core.IntReg32;
+            var src1 = (int)x[rs1];
+            var src2 = (int)x[rs2];
 
-            core.IntReg[rd] = (src1 < src2) ? 1u : 0u;
+            x[rd] = (src1 < src2) ? 1u : 0u;
         }
 
         public override string ToString() =>
@@ -808,10 +829,11 @@ namespace Rafi.RV32I
 
         public override void Execute(Core core)
         {
-            var src1 = core.IntReg[rs1];
-            var src2 = core.IntReg[rs2];
+            var x = core.IntReg32;
+            var src1 = x[rs1];
+            var src2 = x[rs2];
 
-            core.IntReg[rd] = (src1 < src2) ? 1u : 0u;
+            x[rd] = (src1 < src2) ? 1u : 0u;
         }
 
         public override string ToString() =>
@@ -833,10 +855,11 @@ namespace Rafi.RV32I
 
         public override void Execute(Core core)
         {
-            var src1 = core.IntReg[rs1];
-            var src2 = core.IntReg[rs2];
+            var x = core.IntReg32;
+            var src1 = x[rs1];
+            var src2 = x[rs2];
 
-            core.IntReg[rd] = src1 ^ src2;
+            x[rd] = src1 ^ src2;
         }
 
         public override string ToString() =>
@@ -858,10 +881,11 @@ namespace Rafi.RV32I
 
         public override void Execute(Core core)
         {
-            var src1 = core.IntReg[rs1];
-            var src2 = (int)core.IntReg[rs2];
+            var x = core.IntReg32;
+            var src1 = x[rs1];
+            var src2 = (int)x[rs2];
 
-            core.IntReg[rd] = src1 >> src2;
+            x[rd] = src1 >> src2;
         }
 
         public override string ToString() =>
@@ -883,10 +907,11 @@ namespace Rafi.RV32I
 
         public override void Execute(Core core)
         {
-            var src1 = (int)core.IntReg[rs1];
-            var src2 = (int)core.IntReg[rs2];
+            var x = core.IntReg32;
+            var src1 = (int)x[rs1];
+            var src2 = (int)x[rs2];
 
-            core.IntReg[rd] = (uint)(src1 >> src2);
+            x[rd] = (uint)(src1 >> src2);
         }
 
         public override string ToString() =>
@@ -908,10 +933,11 @@ namespace Rafi.RV32I
 
         public override void Execute(Core core)
         {
-            var src1 = core.IntReg[rs1];
-            var src2 = core.IntReg[rs2];
+            var x = core.IntReg32;
+            var src1 = x[rs1];
+            var src2 = x[rs2];
 
-            core.IntReg[rd] = src1 | src2;
+            x[rd] = src1 | src2;
         }
 
         public override string ToString() =>
@@ -933,10 +959,11 @@ namespace Rafi.RV32I
 
         public override void Execute(Core core)
         {
-            var src1 = core.IntReg[rs1];
-            var src2 = core.IntReg[rs2];
+            var x = core.IntReg32;
+            var src1 = x[rs1];
+            var src2 = x[rs2];
 
-            core.IntReg[rd] = src1 & src2;
+            x[rd] = src1 & src2;
         }
 
         public override string ToString() =>
@@ -984,7 +1011,7 @@ namespace Rafi.RV32I
 
         public override Trap PostCheckTrap(Core core)
         {
-            return new EnvironmentCallFromMachineException(core.Pc);
+            return new EnvironmentCallFromMachineException(core.Pc32);
         }
 
         public override string ToString() =>
@@ -999,7 +1026,7 @@ namespace Rafi.RV32I
 
         public override Trap PostCheckTrap(Core core)
         {
-            return new BreakpointException(core.Pc);
+            return new BreakpointException(core.Pc32);
         }
 
         public override string ToString() =>
@@ -1021,10 +1048,12 @@ namespace Rafi.RV32I
 
         public override void Execute(Core core)
         {
-            var value = core.Csr[csr];
+            var x = core.IntReg32;
+            var csr = core.Csr32;
 
-            core.Csr[csr] = core.IntReg[rs1];
-            core.IntReg[rd] = value;
+            var value = csr[this.csr];
+            core.Csr64[this.csr] = x[rs1];
+            x[rd] = value;
         }
 
         public override string ToString() =>
@@ -1047,10 +1076,12 @@ namespace Rafi.RV32I
 
         public override void Execute(Core core)
         {
-            var value = core.Csr[csr];
+            var x = core.IntReg32;
+            var csr = core.Csr32;
 
-            core.Csr[csr] = value | core.IntReg[rs1];
-            core.IntReg[rd] = value;
+            var value = csr[this.csr];
+            csr[this.csr] = value | x[rs1];
+            x[rd] = value;
         }
 
         public override string ToString() =>
@@ -1074,10 +1105,12 @@ namespace Rafi.RV32I
 
         public override void Execute(Core core)
         {
-            var value = core.Csr[csr];
+            var x = core.IntReg32;
+            var csr = core.Csr32;
 
-            core.Csr[csr] = ~value & core.IntReg[rs1];
-            core.IntReg[rd] = value;
+            var value = csr[this.csr];
+            csr[this.csr] = ~value & x[rs1];
+            x[rd] = value;
         }
 
         public override string ToString() =>
@@ -1100,10 +1133,12 @@ namespace Rafi.RV32I
 
         public override void Execute(Core core)
         {
-            var value = core.Csr[csr];
+            var x = core.IntReg32;
+            var csr = core.Csr32;
 
-            core.Csr[csr] = zimm;
-            core.IntReg[rd] = value;
+            var value = csr[this.csr];
+            csr[this.csr] = zimm;
+            x[rd] = value;
         }
 
         public override string ToString() =>
@@ -1126,10 +1161,12 @@ namespace Rafi.RV32I
 
         public override void Execute(Core core)
         {
-            var value = core.Csr[csr];
+            var x = core.IntReg32;
+            var csr = core.Csr32;
 
-            core.Csr[csr] = value | zimm;
-            core.IntReg[rd] = value;
+            var value = csr[this.csr];
+            csr[this.csr] = value | zimm;
+            x[rd] = value;
         }
 
         public override string ToString() =>
@@ -1152,10 +1189,12 @@ namespace Rafi.RV32I
 
         public override void Execute(Core core)
         {
-            var value = core.Csr[csr];
+            var x = core.IntReg32;
+            var csr = core.Csr32;
 
-            core.Csr[csr] = ~value & zimm;
-            core.IntReg[rd] = value;
+            var value = csr[this.csr];
+            core.Csr64[this.csr] = ~value & zimm;
+            x[rd] = value;
         }
 
         public override string ToString() =>
@@ -1171,7 +1210,7 @@ namespace Rafi.RV32I
 
         public override Trap PostCheckTrap(Core core)
         {
-            return new TrapReturn(core.Pc);
+            return new TrapReturn(core.Pc32);
         }
 
         public override string ToString() =>
@@ -1186,7 +1225,7 @@ namespace Rafi.RV32I
 
         public override Trap PostCheckTrap(Core core)
         {
-            return new TrapReturn(core.Pc);
+            return new TrapReturn(core.Pc32);
         }
 
         public override string ToString() =>
@@ -1201,7 +1240,7 @@ namespace Rafi.RV32I
 
         public override Trap PostCheckTrap(Core core)
         {
-            return new TrapReturn(core.Pc);
+            return new TrapReturn(core.Pc32);
         }
 
         public override string ToString() =>

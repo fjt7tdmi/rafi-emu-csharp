@@ -9,7 +9,7 @@ namespace Rafi
         {
         }
 
-        public MSTATUS(uint value)
+        public MSTATUS(ulong value)
             : base(value)
         {
         }
@@ -17,119 +17,119 @@ namespace Rafi
         public override CsrAddr CsrAddr { get; } = CsrAddr.MSTATUS;
 
         // Status Dirty
-        public uint SD
+        public ulong SD
         {
             get => Get(31);
             set => Set(31, value);
         }
 
         // Trap SRET
-        public uint TSR
+        public ulong TSR
         {
             get => Get(22);
             set => Set(22, value);
         }
 
         // Timeout Wait
-        public uint TW
+        public ulong TW
         {
             get => Get(21);
             set => Set(21, value);
         }
 
         // Trap Virtual Memory
-        public uint TVM
+        public ulong TVM
         {
             get => Get(20);
             set => Set(20, value);
         }
 
         // Make eXecutable Readable
-        public uint MXR
+        public ulong MXR
         {
             get => Get(19);
             set => Set(19, value);
         }
 
         // permit Supervisor User Memory access
-        public uint SUM
+        public ulong SUM
         {
             get => Get(18);
             set => Set(18, value);
         }
 
         // Modify PRiVilege
-        public uint MPRV
+        public ulong MPRV
         {
             get => Get(17);
             set => Set(17, value);
         }
 
         // additional user-mode eXtensions Status
-        public uint XS
+        public ulong XS
         {
             get => Get(16, 15);
             set => Set(16, 15, value);
         }
 
         // Floating-point Status
-        public uint FS
+        public ulong FS
         {
             get => Get(14, 13);
             set => Set(14, 13, value);
         }
 
         // Machine Previous Priviledged mode
-        public uint MPP
+        public ulong MPP
         {
             get => Get(12, 11);
             set => Set(12, 11, value);
         }
 
         // Supervisor Previous Priviledged mode
-        public uint SPP
+        public ulong SPP
         {
             get => Get(8);
             set => Set(8, value);
         }
 
         // Machine Previous Interrupt Enable
-        public uint MPIE
+        public ulong MPIE
         {
             get => Get(7);
             set => Set(7, value);
         }
 
         // Supervisor Previous Interrupt Enable
-        public uint SPIE
+        public ulong SPIE
         {
             get => Get(5);
             set => Set(5, value);
         }
 
         // User Previous Interrupt Enable
-        public uint UPIE
+        public ulong UPIE
         {
             get => Get(4);
             set => Set(4, value);
         }
 
         // Machine Interrupt Enable
-        public uint MIE
+        public ulong MIE
         {
             get => Get(3);
             set => Set(3, value);
         }
 
         // Supervisor Interrupt Enable
-        public uint SIE
+        public ulong SIE
         {
             get => Get(1);
             set => Set(1, value);
         }
 
         // User Interrupt Enable
-        public uint UIE
+        public ulong UIE
         {
             get => Get(0);
             set => Set(0, value);
@@ -143,20 +143,20 @@ namespace Rafi
         {
         }
 
-        public MTVEC(uint value)
+        public MTVEC(ulong value)
             : base(value)
         {
         }
 
         public override CsrAddr CsrAddr { get; } = CsrAddr.MTVEC;
 
-        public uint BASE
+        public ulong BASE
         {
             get => Get(31, 2);
             set => Set(31, 2, value);
         }
 
-        public uint MODE
+        public ulong MODE
         {
             get => Get(1, 0);
             set => Set(1, 0, value);
@@ -170,7 +170,7 @@ namespace Rafi
         {
         }
 
-        public MEPC(uint value)
+        public MEPC(ulong value)
             : base(value)
         {
         }
@@ -185,7 +185,7 @@ namespace Rafi
         {
         }
 
-        public MCAUSE(uint value)
+        public MCAUSE(ulong value)
             : base(value)
         {
         }
@@ -200,7 +200,7 @@ namespace Rafi
         {
         }
 
-        public MTVAL(uint value)
+        public MTVAL(ulong value)
             : base(value)
         {
         }

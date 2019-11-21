@@ -2,9 +2,9 @@
 
 namespace Rafi
 {
-    internal abstract class CsrDef : BitField
+    internal abstract class CsrDef : BitField64
     {
-        public CsrDef(uint value)
+        public CsrDef(ulong value)
             : base(value)
         {
         }

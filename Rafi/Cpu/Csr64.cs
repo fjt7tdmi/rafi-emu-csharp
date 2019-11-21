@@ -2,11 +2,11 @@
 
 namespace Rafi
 {
-    internal class Csr
+    internal class Csr64
     {
-        private readonly uint[] values = new uint[0x1000];
+        private readonly ulong[] values = new ulong[0x1000];
 
-        public uint this[int index]
+        public ulong this[int index]
         {
             get => values[index];
             set => values[index] = value;

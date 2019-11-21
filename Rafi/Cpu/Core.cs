@@ -6,19 +6,37 @@ namespace Rafi
     {
         public Bus Bus { get; }
 
-        public Csr Csr { get; } = new Csr();
+        public Csr64 Csr64 { get; }
+        public Csr32 Csr32 { get; }
 
         public FpReg FpReg { get; } = new FpReg();
 
-        public IntReg IntReg { get; } = new IntReg();
+        public IntReg64 IntReg64 { get; }
+        public IntReg32 IntReg32 { get; }
 
-        public uint Pc { get; set; } = 0;
+        public uint NextPc32
+        {
+            get => (uint)NextPc64;
+            set => NextPc64 = value;
+        }
 
-        public uint NextPc { get; set; } = 0;
+        public ulong NextPc64 { get; set; }
+
+        public uint Pc32
+        {
+            get => (uint)Pc64;
+            set => Pc64 = value;
+        }
+
+        public ulong Pc64 { get; set; }
 
         public Core(Bus bus)
         {
             Bus = bus;
+            Csr64 = new Csr64();
+            Csr32 = new Csr32(Csr64);
+            IntReg64 = new IntReg64();
+            IntReg32 = new IntReg32(IntReg64);
         }
     }
 }

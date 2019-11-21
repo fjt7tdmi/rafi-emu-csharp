@@ -2,11 +2,11 @@
 
 namespace Rafi
 {
-    internal class BitField
+    internal class BitField32
     {
         public uint Value { get; set; }
 
-        public BitField(uint value)
+        public BitField32(uint value)
         {
             Value = value;
         }

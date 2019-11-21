@@ -17,7 +17,7 @@ namespace Rafi
 
         public uint Pc
         {
-            set => processor.Core.Pc = value;
+            set => processor.Core.Pc32 = value;
         }
 
         public Emulator()
