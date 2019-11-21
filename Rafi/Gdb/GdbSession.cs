@@ -213,7 +213,7 @@ namespace Rafi
                 sb.Append(ConvertToHex(value));
             }
 
-            writer.Write(sb.ToString());
+            SendResponse(writer, sb.ToString());
         }
 
         private void ProcessCommandReadMemory(StreamWriter writer, string command)
