@@ -11,7 +11,7 @@ namespace RafiEmu
             Parser.Default.ParseArguments<CommandLineOption>(args)
                 .WithParsed(option =>
                 {
-                    var emulator = new Emulator();
+                    var emulator = new Emulator(option.XLEN);
 
                     emulator.Pc = option.Pc;
                     emulator.LoadToMemory(option.Load);

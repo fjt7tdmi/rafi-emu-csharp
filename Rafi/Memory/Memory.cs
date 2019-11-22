@@ -26,6 +26,8 @@ namespace Rafi
 
         public uint ReadUInt32(int addr) => BitConverter.ToUInt32(body, addr);
 
+        public ulong ReadUInt64(int addr) => BitConverter.ToUInt64(body, addr);
+
         public void WriteUInt8(int addr, byte value)
         {
             body[addr] = value;
@@ -45,5 +47,11 @@ namespace Rafi
             Buffer.BlockCopy(buffer, 0, body, addr, buffer.Length);
         }
 
+        public void WriteUInt64(int addr, ulong value)
+        {
+            var buffer = BitConverter.GetBytes(value);
+
+            Buffer.BlockCopy(buffer, 0, body, addr, buffer.Length);
+        }
     }
 }

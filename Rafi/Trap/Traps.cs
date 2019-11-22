@@ -7,29 +7,29 @@ namespace Rafi
         public TrapType TrapType { get; }
         public InterruptType? Interrupt { get; }
         public ExceptionType? Exception { get; }
-        public uint Cause { get; }
-        public uint Pc { get; }
-        public uint Value { get; }
+        public ulong Cause { get; }
+        public ulong Pc { get; }
+        public ulong Value { get; }
 
-        protected Trap(InterruptType interruptType, uint pc, uint value = 0)
+        protected Trap(InterruptType interruptType, ulong pc, ulong value = 0)
         {
             TrapType = TrapType.Interrupt;
             Interrupt = interruptType;
-            Cause = (uint)interruptType;
+            Cause = (ulong)interruptType;
             Pc = pc;
             Value = value;
         }
 
-        protected Trap(ExceptionType exceptionType, uint pc, uint value = 0)
+        protected Trap(ExceptionType exceptionType, ulong pc, ulong value = 0)
         {
             TrapType = TrapType.Exception;
             Exception = exceptionType;
-            Cause = (uint)exceptionType;
+            Cause = (ulong)exceptionType;
             Pc = pc;
             Value = value;
         }
 
-        protected Trap(TrapType trapType, uint pc)
+        protected Trap(TrapType trapType, ulong pc)
         {
             TrapType = trapType;
             Pc = pc;
@@ -38,7 +38,7 @@ namespace Rafi
 
     internal class BreakpointException : Trap
     {
-        public BreakpointException(uint pc)
+        public BreakpointException(ulong pc)
             : base(ExceptionType.Breakpoint, pc)
         {
         }
@@ -46,7 +46,7 @@ namespace Rafi
 
     internal class EnvironmentCallFromMachineException : Trap
     {
-        public EnvironmentCallFromMachineException(uint pc)
+        public EnvironmentCallFromMachineException(ulong pc)
             : base(ExceptionType.EnvironmentCallFromMachine, pc)
         {
         }
@@ -54,7 +54,7 @@ namespace Rafi
 
     internal class TrapReturn : Trap
     {
-        public TrapReturn(uint pc)
+        public TrapReturn(ulong pc)
             : base(TrapType.Return, pc)
         {
         }

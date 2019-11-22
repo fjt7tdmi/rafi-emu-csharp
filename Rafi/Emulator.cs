@@ -20,11 +20,11 @@ namespace Rafi
             set => processor.Core.Pc32 = value;
         }
 
-        public Emulator()
+        public Emulator(int xlen)
         {
             memory = new Memory();
             bus = new Bus(memory);
-            processor = new Processor(bus);
+            processor = new Processor(xlen, bus);
         }
 
         public void LoadToMemory(string path)

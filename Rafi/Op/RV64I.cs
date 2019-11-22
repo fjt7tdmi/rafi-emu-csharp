@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Rafi.RV32I
+namespace Rafi.RV64I
 {
     internal class LUI : Op
     {
@@ -15,9 +15,9 @@ namespace Rafi.RV32I
 
         public override void Execute(Core core)
         {
-            var x = core.IntReg32;
+            var x = core.IntReg64;
 
-            x[rd] = imm;
+            x[rd] = Utils.SignExtend64(32, imm);
         }
 
         public override string ToString() =>
@@ -37,9 +37,9 @@ namespace Rafi.RV32I
 
         public override void Execute(Core core)
         {
-            var x = core.IntReg32;
+            var x = core.IntReg64;
 
-            x[rd] = core.Pc32 + imm;
+            x[rd] = core.Pc64 + Utils.SignExtend64(20, imm);
         }
 
         public override string ToString() =>
@@ -59,10 +59,10 @@ namespace Rafi.RV32I
 
         public override void Execute(Core core)
         {
-            var x = core.IntReg32;
-            var nextPc = core.NextPc32;
+            var x = core.IntReg64;
+            var nextPc = core.NextPc64;
 
-            core.NextPc32 = core.Pc32 + imm;
+            core.NextPc64 = core.Pc64 + imm;
             x[rd] = nextPc;
         }
 
@@ -86,10 +86,10 @@ namespace Rafi.RV32I
 
         public override void Execute(Core core)
         {
-            var x = core.IntReg32;
-            var nextPc = core.NextPc32;
+            var x = core.IntReg64;
+            var nextPc = core.NextPc64;
 
-            core.NextPc32 = x[rs1] + imm;
+            core.NextPc64 = x[rs1] + imm;
             x[rd] = nextPc;
         }
 
@@ -113,11 +113,11 @@ namespace Rafi.RV32I
 
         public override void Execute(Core core)
         {
-            var x = core.IntReg32;
+            var x = core.IntReg64;
 
             if (x[rs1] == x[rs2])
             {
-                core.NextPc32 = core.Pc32 + imm;
+                core.NextPc64 = core.Pc64 + imm;
             }
         }
 
@@ -142,11 +142,11 @@ namespace Rafi.RV32I
 
         public override void Execute(Core core)
         {
-            var x = core.IntReg32;
+            var x = core.IntReg64;
 
             if (x[rs1] != x[rs2])
             {
-                core.NextPc32 = core.Pc32 + imm;
+                core.NextPc64 = core.Pc64 + imm;
             }
         }
 
@@ -171,11 +171,11 @@ namespace Rafi.RV32I
 
         public override void Execute(Core core)
         {
-            var x = core.IntReg32;
+            var x = core.IntReg64;
 
             if ((int)x[rs1] < (int)x[rs2])
             {
-                core.NextPc32 = core.Pc32 + imm;
+                core.NextPc64 = core.Pc64 + imm;
             }
         }
 
@@ -200,11 +200,11 @@ namespace Rafi.RV32I
 
         public override void Execute(Core core)
         {
-            var x = core.IntReg32;
+            var x = core.IntReg64;
 
             if ((int)x[rs1] >= (int)x[rs2])
             {
-                core.NextPc32 = core.Pc32 + imm;
+                core.NextPc64 = core.Pc64 + imm;
             }
         }
 
@@ -229,11 +229,11 @@ namespace Rafi.RV32I
 
         public override void Execute(Core core)
         {
-            var x = core.IntReg32;
+            var x = core.IntReg64;
 
             if (x[rs1] < x[rs2])
             {
-                core.NextPc32 = core.Pc32 + imm;
+                core.NextPc64 = core.Pc64 + imm;
             }
         }
 
@@ -256,11 +256,11 @@ namespace Rafi.RV32I
 
         public override void Execute(Core core)
         {
-            var x = core.IntReg32;
+            var x = core.IntReg64;
 
             if (x[rs1] >= x[rs2])
             {
-                core.NextPc32 = core.Pc32 + imm;
+                core.NextPc64 = core.Pc64 + imm;
             }
         }
 
@@ -283,11 +283,12 @@ namespace Rafi.RV32I
 
         public override void Execute(Core core)
         {
-            var x = core.IntReg32;
+            var x = core.IntReg64;
+
             var addr = x[rs1] + imm;
             var value = core.Bus.ReadUInt8(addr);
 
-            x[rd] = Utils.SignExtend32(8, value);
+            x[rd] = Utils.SignExtend64(8, value);
         }
 
         public override string ToString() =>
@@ -309,11 +310,12 @@ namespace Rafi.RV32I
 
         public override void Execute(Core core)
         {
-            var x = core.IntReg32;
+            var x = core.IntReg64;
+
             var addr = x[rs1] + imm;
             var value = core.Bus.ReadUInt16(addr);
 
-            x[rd] = Utils.SignExtend32(16, value);
+            x[rd] = Utils.SignExtend64(16, value);
         }
 
         public override string ToString() =>
@@ -335,15 +337,43 @@ namespace Rafi.RV32I
 
         public override void Execute(Core core)
         {
-            var x = core.IntReg32;
+            var x = core.IntReg64;
+
             var addr = x[rs1] + imm;
             var value = core.Bus.ReadUInt32(addr);
+
+            x[rd] = Utils.SignExtend64(32, value);
+        }
+
+        public override string ToString() =>
+            $"lw {Names.IntReg[rd]},{imm}({Names.IntReg[rs1]})";
+    }
+
+    internal class LD : Op
+    {
+        private readonly int rd;
+        private readonly int rs1;
+        private readonly uint imm;
+
+        public LD(int rd, int rs1, uint imm)
+        {
+            this.rd = rd;
+            this.rs1 = rs1;
+            this.imm = imm;
+        }
+
+        public override void Execute(Core core)
+        {
+            var x = core.IntReg64;
+
+            var addr = x[rs1] + imm;
+            var value = core.Bus.ReadUInt64(addr);
 
             x[rd] = value;
         }
 
         public override string ToString() =>
-            $"lw {Names.IntReg[rd]},{imm}({Names.IntReg[rs1]})";
+            $"ld {Names.IntReg[rd]},{imm}({Names.IntReg[rs1]})";
     }
 
     internal class LBU : Op
@@ -361,11 +391,12 @@ namespace Rafi.RV32I
 
         public override void Execute(Core core)
         {
-            var x = core.IntReg32;
+            var x = core.IntReg64;
+
             var addr = x[rs1] + imm;
             var value = core.Bus.ReadUInt8(addr);
 
-            x[rd] = Utils.ZeroExtend32(8, value);
+            x[rd] = Utils.ZeroExtend64(8, value);
         }
 
         public override string ToString() =>
@@ -387,15 +418,43 @@ namespace Rafi.RV32I
 
         public override void Execute(Core core)
         {
-            var x = core.IntReg32;
+            var x = core.IntReg64;
+
             var addr = x[rs1] + imm;
             var value = core.Bus.ReadUInt16(addr);
 
-            x[rd] = Utils.ZeroExtend32(16, value);
+            x[rd] = Utils.ZeroExtend64(16, value);
         }
 
         public override string ToString() =>
             $"lhu {Names.IntReg[rd]},{imm}({Names.IntReg[rs1]})";
+    }
+
+    internal class LWU : Op
+    {
+        private readonly int rd;
+        private readonly int rs1;
+        private readonly uint imm;
+
+        public LWU(int rd, int rs1, uint imm)
+        {
+            this.rd = rd;
+            this.rs1 = rs1;
+            this.imm = imm;
+        }
+
+        public override void Execute(Core core)
+        {
+            var x = core.IntReg64;
+
+            var addr = x[rs1] + imm;
+            var value = core.Bus.ReadUInt16(addr);
+
+            x[rd] = Utils.ZeroExtend64(32, value);
+        }
+
+        public override string ToString() =>
+            $"lwu {Names.IntReg[rd]},{imm}({Names.IntReg[rs1]})";
     }
 
     internal class SB : Op
@@ -413,7 +472,8 @@ namespace Rafi.RV32I
 
         public override void Execute(Core core)
         {
-            var x = core.IntReg32;
+            var x = core.IntReg64;
+
             var addr = x[rs1] + imm;
             var value = (byte)x[rs2];
 
@@ -439,7 +499,8 @@ namespace Rafi.RV32I
 
         public override void Execute(Core core)
         {
-            var x = core.IntReg32;
+            var x = core.IntReg64;
+
             var addr = x[rs1] + imm;
             var value = (ushort)x[rs2];
 
@@ -465,11 +526,39 @@ namespace Rafi.RV32I
 
         public override void Execute(Core core)
         {
-            var x = core.IntReg32;
+            var x = core.IntReg64;
+
             var addr = x[rs1] + imm;
             var value = (ushort)x[rs2];
 
             core.Bus.WriteUInt32(addr, value);
+        }
+
+        public override string ToString() =>
+            $"sw {Names.IntReg[rs2]},{imm}({Names.IntReg[rs1]})";
+    }
+
+    internal class SD : Op
+    {
+        private readonly int rs1;
+        private readonly int rs2;
+        private readonly uint imm;
+
+        public SD(int rs1, int rs2, uint imm)
+        {
+            this.rs1 = rs1;
+            this.rs2 = rs2;
+            this.imm = imm;
+        }
+
+        public override void Execute(Core core)
+        {
+            var x = core.IntReg64;
+
+            var addr = x[rs1] + imm;
+            var value = (ushort)x[rs2];
+
+            core.Bus.WriteUInt64(addr, value);
         }
 
         public override string ToString() =>
@@ -491,7 +580,7 @@ namespace Rafi.RV32I
 
         public override void Execute(Core core)
         {
-            var x = core.IntReg32;
+            var x = core.IntReg64;
             var src1 = x[rs1];
             var value = src1 + imm;
             
@@ -502,6 +591,32 @@ namespace Rafi.RV32I
             $"addi {Names.IntReg[rd]},{Names.IntReg[rs1]},{(int)imm}";
     }
 
+    internal class ADDIW : Op
+    {
+        private readonly int rd;
+        private readonly int rs1;
+        private readonly uint imm;
+
+        public ADDIW(int rd, int rs1, uint imm)
+        {
+            this.rd = rd;
+            this.rs1 = rs1;
+            this.imm = imm;
+        }
+
+        public override void Execute(Core core)
+        {
+            var x = core.IntReg64;
+
+            var src1 = (uint)x[rs1];
+            var value = src1 + imm;
+
+            x[rd] = Utils.SignExtend64(32, value);
+        }
+
+        public override string ToString() =>
+            $"addiw {Names.IntReg[rd]},{Names.IntReg[rs1]},{(int)imm}";
+    }
     internal class SLTI : Op
     {
         private readonly int rd;
@@ -517,7 +632,7 @@ namespace Rafi.RV32I
 
         public override void Execute(Core core)
         {
-            var x = core.IntReg32;
+            var x = core.IntReg64;
             var src1 = (int)x[rs1];
             var value = (src1 < (int)imm) ? 1u : 0u;
 
@@ -543,7 +658,7 @@ namespace Rafi.RV32I
 
         public override void Execute(Core core)
         {
-            var x = core.IntReg32;
+            var x = core.IntReg64;
             var src1 = x[rs1];
             var value = (src1 < imm) ? 1u : 0u;
 
@@ -569,7 +684,7 @@ namespace Rafi.RV32I
 
         public override void Execute(Core core)
         {
-            var x = core.IntReg32;
+            var x = core.IntReg64;
             var src1 = x[rs1];
             var value = src1 ^ imm;
 
@@ -595,7 +710,7 @@ namespace Rafi.RV32I
 
         public override void Execute(Core core)
         {
-            var x = core.IntReg32;
+            var x = core.IntReg64;
             var src1 = x[rs1];
             var value = src1 | imm;
 
@@ -621,7 +736,7 @@ namespace Rafi.RV32I
 
         public override void Execute(Core core)
         {
-            var x = core.IntReg32;
+            var x = core.IntReg64;
             var src1 = x[rs1];
             var value = src1 & imm;
 
@@ -647,7 +762,8 @@ namespace Rafi.RV32I
 
         public override void Execute(Core core)
         {
-            var x = core.IntReg32;
+            var x = core.IntReg64;
+
             var src1 = x[rs1];
             var value = src1 << shamt;
 
@@ -656,6 +772,33 @@ namespace Rafi.RV32I
 
         public override string ToString() =>
             $"slli {Names.IntReg[rd]},{Names.IntReg[rs1]},0x{shamt:x}";
+    }
+
+    internal class SLLIW : Op
+    {
+        private readonly int rd;
+        private readonly int rs1;
+        private readonly int shamt;
+
+        public SLLIW(int rd, int rs1, int shamt)
+        {
+            this.rd = rd;
+            this.rs1 = rs1;
+            this.shamt = shamt;
+        }
+
+        public override void Execute(Core core)
+        {
+            var x = core.IntReg64;
+
+            var src1 = (uint)x[rs1];
+            var value = src1 << shamt;
+
+            x[rd] = Utils.SignExtend64(32, value);
+        }
+
+        public override string ToString() =>
+            $"slliw {Names.IntReg[rd]},{Names.IntReg[rs1]},0x{shamt:x}";
     }
 
     internal class SRLI : Op
@@ -673,7 +816,8 @@ namespace Rafi.RV32I
 
         public override void Execute(Core core)
         {
-            var x = core.IntReg32;
+            var x = core.IntReg64;
+
             var src1 = x[rs1];
             var value = src1 >> shamt;
 
@@ -682,6 +826,33 @@ namespace Rafi.RV32I
 
         public override string ToString() =>
             $"srli {Names.IntReg[rd]},{Names.IntReg[rs1]},0x{shamt:x}";
+    }
+
+    internal class SRLIW : Op
+    {
+        private readonly int rd;
+        private readonly int rs1;
+        private readonly int shamt;
+
+        public SRLIW(int rd, int rs1, int shamt)
+        {
+            this.rd = rd;
+            this.rs1 = rs1;
+            this.shamt = shamt;
+        }
+
+        public override void Execute(Core core)
+        {
+            var x = core.IntReg64;
+
+            var src1 = (uint)x[rs1];
+            var value = src1 >> shamt;
+
+            x[rd] = Utils.SignExtend64(32, value);
+        }
+
+        public override string ToString() =>
+            $"srliw {Names.IntReg[rd]},{Names.IntReg[rs1]},0x{shamt:x}";
     }
 
     internal class SRAI : Op
@@ -699,15 +870,43 @@ namespace Rafi.RV32I
 
         public override void Execute(Core core)
         {
-            var x = core.IntReg32;
-            var src1 = (int)x[rs1];
+            var x = core.IntReg64;
+
+            var src1 = (long)x[rs1];
             var value = src1 >> shamt;
 
-            x[rd] = (uint)value;
+            x[rd] = (ulong)value;
         }
 
         public override string ToString() =>
             $"srai {Names.IntReg[rd]},{Names.IntReg[rs1]},0x{shamt:x}";
+    }
+
+    internal class SRAIW : Op
+    {
+        private readonly int rd;
+        private readonly int rs1;
+        private readonly int shamt;
+
+        public SRAIW(int rd, int rs1, int shamt)
+        {
+            this.rd = rd;
+            this.rs1 = rs1;
+            this.shamt = shamt;
+        }
+
+        public override void Execute(Core core)
+        {
+            var x = core.IntReg64;
+
+            var src1 = (int)x[rs1];
+            var value = (uint)(src1 >> shamt);
+
+            x[rd] = Utils.SignExtend64(32, value);
+        }
+
+        public override string ToString() =>
+            $"sraiw {Names.IntReg[rd]},{Names.IntReg[rs1]},0x{shamt:x}";
     }
 
     internal class ADD : Op
@@ -725,7 +924,7 @@ namespace Rafi.RV32I
 
         public override void Execute(Core core)
         {
-            var x = core.IntReg32;
+            var x = core.IntReg64;
             var src1 = x[rs1];
             var src2 = x[rs2];
 
@@ -734,6 +933,33 @@ namespace Rafi.RV32I
 
         public override string ToString() =>
             $"add {Names.IntReg[rd]},{Names.IntReg[rs1]},{Names.IntReg[rs2]}";
+    }
+
+    internal class ADDW : Op
+    {
+        private readonly int rd;
+        private readonly int rs1;
+        private readonly int rs2;
+
+        public ADDW(int rd, int rs1, int rs2)
+        {
+            this.rd = rd;
+            this.rs1 = rs1;
+            this.rs2 = rs2;
+        }
+
+        public override void Execute(Core core)
+        {
+            var x = core.IntReg64;
+            
+            var src1 = (uint)x[rs1];
+            var src2 = (uint)x[rs2];
+
+            x[rd] = Utils.SignExtend64(32, src1 + src2);
+        }
+
+        public override string ToString() =>
+            $"addw {Names.IntReg[rd]},{Names.IntReg[rs1]},{Names.IntReg[rs2]}";
     }
 
     internal class SUB : Op
@@ -751,7 +977,8 @@ namespace Rafi.RV32I
 
         public override void Execute(Core core)
         {
-            var x = core.IntReg32;
+            var x = core.IntReg64;
+
             var src1 = x[rs1];
             var src2 = x[rs2];
 
@@ -760,6 +987,33 @@ namespace Rafi.RV32I
 
         public override string ToString() =>
             $"sub {Names.IntReg[rd]},{Names.IntReg[rs1]},{Names.IntReg[rs2]}";
+    }
+
+    internal class SUBW : Op
+    {
+        private readonly int rd;
+        private readonly int rs1;
+        private readonly int rs2;
+
+        public SUBW(int rd, int rs1, int rs2)
+        {
+            this.rd = rd;
+            this.rs1 = rs1;
+            this.rs2 = rs2;
+        }
+
+        public override void Execute(Core core)
+        {
+            var x = core.IntReg64;
+
+            var src1 = (uint)x[rs1];
+            var src2 = (uint)x[rs2];
+
+            x[rd] = Utils.SignExtend64(32, src1 - src2);
+        }
+
+        public override string ToString() =>
+            $"subw {Names.IntReg[rd]},{Names.IntReg[rs1]},{Names.IntReg[rs2]}";
     }
 
     internal class SLL : Op
@@ -777,7 +1031,7 @@ namespace Rafi.RV32I
 
         public override void Execute(Core core)
         {
-            var x = core.IntReg32;
+            var x = core.IntReg64;
             var src1 = x[rs1];
             var src2 = (int)x[rs2];
 
@@ -786,6 +1040,33 @@ namespace Rafi.RV32I
 
         public override string ToString() =>
             $"sll {Names.IntReg[rd]},{Names.IntReg[rs1]},{Names.IntReg[rs2]}";
+    }
+
+    internal class SLLW : Op
+    {
+        private readonly int rd;
+        private readonly int rs1;
+        private readonly int rs2;
+
+        public SLLW(int rd, int rs1, int rs2)
+        {
+            this.rd = rd;
+            this.rs1 = rs1;
+            this.rs2 = rs2;
+        }
+
+        public override void Execute(Core core)
+        {
+            var x = core.IntReg64;
+
+            var src1 = (uint)x[rs1];
+            var src2 = (int)x[rs2];
+
+            x[rd] = Utils.SignExtend64(32, src1 << src2);
+        }
+
+        public override string ToString() =>
+            $"sllw {Names.IntReg[rd]},{Names.IntReg[rs1]},{Names.IntReg[rs2]}";
     }
 
     internal class SLT : Op
@@ -803,7 +1084,7 @@ namespace Rafi.RV32I
 
         public override void Execute(Core core)
         {
-            var x = core.IntReg32;
+            var x = core.IntReg64;
             var src1 = (int)x[rs1];
             var src2 = (int)x[rs2];
 
@@ -829,7 +1110,7 @@ namespace Rafi.RV32I
 
         public override void Execute(Core core)
         {
-            var x = core.IntReg32;
+            var x = core.IntReg64;
             var src1 = x[rs1];
             var src2 = x[rs2];
 
@@ -855,7 +1136,7 @@ namespace Rafi.RV32I
 
         public override void Execute(Core core)
         {
-            var x = core.IntReg32;
+            var x = core.IntReg64;
             var src1 = x[rs1];
             var src2 = x[rs2];
 
@@ -881,7 +1162,7 @@ namespace Rafi.RV32I
 
         public override void Execute(Core core)
         {
-            var x = core.IntReg32;
+            var x = core.IntReg64;
             var src1 = x[rs1];
             var src2 = (int)x[rs2];
 
@@ -890,6 +1171,33 @@ namespace Rafi.RV32I
 
         public override string ToString() =>
             $"srl {Names.IntReg[rd]},{Names.IntReg[rs1]},{Names.IntReg[rs2]}";
+    }
+
+    internal class SRLW : Op
+    {
+        private readonly int rd;
+        private readonly int rs1;
+        private readonly int rs2;
+
+        public SRLW(int rd, int rs1, int rs2)
+        {
+            this.rd = rd;
+            this.rs1 = rs1;
+            this.rs2 = rs2;
+        }
+
+        public override void Execute(Core core)
+        {
+            var x = core.IntReg64;
+
+            var src1 = (uint)x[rs1];
+            var src2 = (int)x[rs2];
+
+            x[rd] = Utils.SignExtend64(32, src1 >> src2);
+        }
+
+        public override string ToString() =>
+            $"srlw {Names.IntReg[rd]},{Names.IntReg[rs1]},{Names.IntReg[rs2]}";
     }
 
     internal class SRA : Op
@@ -907,7 +1215,7 @@ namespace Rafi.RV32I
 
         public override void Execute(Core core)
         {
-            var x = core.IntReg32;
+            var x = core.IntReg64;
             var src1 = (int)x[rs1];
             var src2 = (int)x[rs2];
 
@@ -916,6 +1224,33 @@ namespace Rafi.RV32I
 
         public override string ToString() =>
             $"sra {Names.IntReg[rd]},{Names.IntReg[rs1]},{Names.IntReg[rs2]}";
+    }
+
+    internal class SRAW : Op
+    {
+        private readonly int rd;
+        private readonly int rs1;
+        private readonly int rs2;
+
+        public SRAW(int rd, int rs1, int rs2)
+        {
+            this.rd = rd;
+            this.rs1 = rs1;
+            this.rs2 = rs2;
+        }
+
+        public override void Execute(Core core)
+        {
+            var x = core.IntReg64;
+
+            var src1 = (int)x[rs1];
+            var src2 = (int)x[rs2];
+
+            x[rd] = Utils.SignExtend64(32, (uint)(src1 >> src2));
+        }
+
+        public override string ToString() =>
+            $"sraw {Names.IntReg[rd]},{Names.IntReg[rs1]},{Names.IntReg[rs2]}";
     }
 
     internal class OR : Op
@@ -933,7 +1268,7 @@ namespace Rafi.RV32I
 
         public override void Execute(Core core)
         {
-            var x = core.IntReg32;
+            var x = core.IntReg64;
             var src1 = x[rs1];
             var src2 = x[rs2];
 
@@ -959,7 +1294,7 @@ namespace Rafi.RV32I
 
         public override void Execute(Core core)
         {
-            var x = core.IntReg32;
+            var x = core.IntReg64;
             var src1 = x[rs1];
             var src2 = x[rs2];
 
@@ -1011,7 +1346,7 @@ namespace Rafi.RV32I
 
         public override Trap PostCheckTrap(Core core)
         {
-            return new EnvironmentCallFromMachineException(core.Pc32);
+            return new EnvironmentCallFromMachineException(core.Pc64);
         }
 
         public override string ToString() =>
@@ -1026,7 +1361,7 @@ namespace Rafi.RV32I
 
         public override Trap PostCheckTrap(Core core)
         {
-            return new BreakpointException(core.Pc32);
+            return new BreakpointException(core.Pc64);
         }
 
         public override string ToString() =>
@@ -1048,11 +1383,11 @@ namespace Rafi.RV32I
 
         public override void Execute(Core core)
         {
-            var x = core.IntReg32;
-            var csr = core.Csr32;
+            var x = core.IntReg64;
+            var csr = core.Csr64;
 
             var value = csr[this.csr];
-            csr[this.csr] = x[rs1];
+            core.Csr64[this.csr] = x[rs1];
             x[rd] = value;
         }
 
@@ -1076,8 +1411,8 @@ namespace Rafi.RV32I
 
         public override void Execute(Core core)
         {
-            var x = core.IntReg32;
-            var csr = core.Csr32;
+            var x = core.IntReg64;
+            var csr = core.Csr64;
 
             var value = csr[this.csr];
             csr[this.csr] = value | x[rs1];
@@ -1105,8 +1440,8 @@ namespace Rafi.RV32I
 
         public override void Execute(Core core)
         {
-            var x = core.IntReg32;
-            var csr = core.Csr32;
+            var x = core.IntReg64;
+            var csr = core.Csr64;
 
             var value = csr[this.csr];
             csr[this.csr] = ~value & x[rs1];
@@ -1133,8 +1468,8 @@ namespace Rafi.RV32I
 
         public override void Execute(Core core)
         {
-            var x = core.IntReg32;
-            var csr = core.Csr32;
+            var x = core.IntReg64;
+            var csr = core.Csr64;
 
             var value = csr[this.csr];
             csr[this.csr] = zimm;
@@ -1161,8 +1496,8 @@ namespace Rafi.RV32I
 
         public override void Execute(Core core)
         {
-            var x = core.IntReg32;
-            var csr = core.Csr32;
+            var x = core.IntReg64;
+            var csr = core.Csr64;
 
             var value = csr[this.csr];
             csr[this.csr] = value | zimm;
@@ -1189,11 +1524,11 @@ namespace Rafi.RV32I
 
         public override void Execute(Core core)
         {
-            var x = core.IntReg32;
-            var csr = core.Csr32;
+            var x = core.IntReg64;
+            var csr = core.Csr64;
 
             var value = csr[this.csr];
-            csr[this.csr] = ~value & zimm;
+            core.Csr64[this.csr] = ~value & zimm;
             x[rd] = value;
         }
 
@@ -1210,7 +1545,7 @@ namespace Rafi.RV32I
 
         public override Trap PostCheckTrap(Core core)
         {
-            return new TrapReturn(core.Pc32);
+            return new TrapReturn(core.Pc64);
         }
 
         public override string ToString() =>
@@ -1225,7 +1560,7 @@ namespace Rafi.RV32I
 
         public override Trap PostCheckTrap(Core core)
         {
-            return new TrapReturn(core.Pc32);
+            return new TrapReturn(core.Pc64);
         }
 
         public override string ToString() =>
@@ -1240,7 +1575,7 @@ namespace Rafi.RV32I
 
         public override Trap PostCheckTrap(Core core)
         {
-            return new TrapReturn(core.Pc32);
+            return new TrapReturn(core.Pc64);
         }
 
         public override string ToString() =>

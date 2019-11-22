@@ -4,16 +4,28 @@ namespace Rafi
 {
     internal class Processor
     {
-        private readonly Decoder decoder = new Decoder();
         private readonly Logger logger = new Logger("cpu");
 
         private readonly Bus bus;
+        private readonly IDecoder decoder;
 
         internal Core Core { get; }
 
-        public Processor(Bus bus)
+        public Processor(int xlen, Bus bus)
         {
             this.bus = bus;
+
+            switch (xlen)
+            {
+                case 32:
+                    decoder = new Decoder32();
+                    break;
+                case 64:
+                    decoder = new Decoder64();
+                    break;
+                default:
+                    throw new NotImplementedException();
+            }
 
             Core = new Core(bus);
         }

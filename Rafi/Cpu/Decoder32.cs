@@ -2,11 +2,11 @@
 
 namespace Rafi
 {
-    internal class Decoder
+    internal class Decoder32 : IDecoder
     {
         public Op Decode(uint insn) => DecodeRV32I(insn);
         
-        public Op DecodeRV32I(uint insn)
+        private Op DecodeRV32I(uint insn)
         {
             var opcode = Utils.Pick(insn, 0, 7);
 
@@ -241,7 +241,7 @@ namespace Rafi
 
         private (uint imm, int rs1, int funct3, int rd) DecodeOperandI(uint insn) =>
             new ValueTuple<uint, int, int, int>(
-                Utils.SignExtend(12,
+                Utils.SignExtend32(12,
                     Utils.Pick(insn, 20, 12)),
                 (int)Utils.Pick(insn, 15, 5),
                 (int)Utils.Pick(insn, 12, 3),
@@ -257,7 +257,7 @@ namespace Rafi
 
         private (uint imm, int rs2, int rs1, int funct3) DecodeOperandS(uint insn) =>
             new ValueTuple<uint, int, int, int>(
-                Utils.SignExtend(12,
+                Utils.SignExtend32(12,
                     Utils.Pick(insn, 25, 7) << 5 |
                     Utils.Pick(insn, 7, 5)),
                 (int)Utils.Pick(insn, 20, 5),
@@ -266,7 +266,7 @@ namespace Rafi
 
         private (uint imm, int rs2, int rs1, int funct3) DecodeOperandB(uint insn) =>
             new ValueTuple<uint, int, int, int>(
-                Utils.SignExtend(13,
+                Utils.SignExtend32(13,
                     Utils.Pick(insn, 31) << 12 |
                     Utils.Pick(insn, 7) << 11 |
                     Utils.Pick(insn, 25, 6) << 5 |
@@ -282,7 +282,7 @@ namespace Rafi
 
         private (uint imm, int rd) DecodeOperandJ(uint insn) =>
             new ValueTuple<uint, int>(
-                Utils.SignExtend(21,
+                Utils.SignExtend32(21,
                     Utils.Pick(insn, 31) << 20 |
                     Utils.Pick(insn, 21, 10) << 1 |
                     Utils.Pick(insn, 20) << 11 |
