@@ -30,7 +30,8 @@ using (var reader = new StreamReader(stream))
 
         var file = line.TrimEnd() + ".bin";
         var path = Path.Combine(dir, "work", "riscv-tests", file);
-        var arguments = $"-c 1000 -l {path}";
+        var xlen = line.StartsWith("rv32") ? 32 : 64;
+        var arguments = $"-x {xlen} -c 1000 -l {path}";
 
         Console.WriteLine($"RafiEmu {arguments}");
 
