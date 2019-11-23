@@ -198,20 +198,14 @@ namespace Rafi
 
         private void ProcessCommandReadReg(StreamWriter writer)
         {
-            // Only for RV32
             var sb = new StringBuilder();
 
-            foreach (uint value in emulator.Core.IntReg64.Values)
+            foreach (ulong value in emulator.Core.IntReg64.Values)
             {
                 sb.Append(ConvertToHex(value));
             }
 
-            sb.Append(ConvertToHex(emulator.Core.Pc32));
-
-            foreach (ulong value in emulator.Core.FpReg.Values)
-            {
-                sb.Append(ConvertToHex(value));
-            }
+            sb.Append(ConvertToHex(emulator.Core.Pc64));
 
             SendResponse(writer, sb.ToString());
         }
