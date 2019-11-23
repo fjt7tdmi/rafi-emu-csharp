@@ -11,6 +11,11 @@ namespace Rafi
             this.memory = memory;
         }
 
+        public void Read(byte[] buffer, int offset, int length, ulong addr)
+        {
+            memory.Read(buffer, offset, length, GetMemoryAddr(addr));
+        }
+
         public byte ReadUInt8(ulong addr) => memory.ReadUInt8(GetMemoryAddr(addr));
 
         public ushort ReadUInt16(ulong addr) => memory.ReadUInt16(GetMemoryAddr(addr));

@@ -20,6 +20,11 @@ namespace Rafi
             }
         }
 
+        public void Read(byte[] buffer, int offset, int length, int addr)
+        {
+            Buffer.BlockCopy(body, addr, buffer, offset, length);
+        }
+
         public byte ReadUInt8(int addr) => body[addr];
 
         public ushort ReadUInt16(int addr) => BitConverter.ToUInt16(body, addr);

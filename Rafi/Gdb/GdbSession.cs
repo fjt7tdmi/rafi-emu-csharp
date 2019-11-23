@@ -70,20 +70,14 @@ namespace Rafi
 
         private string ConvertToHex(ulong value) => ConvertToHex(BitConverter.GetBytes(value));
 
-        private int ParseHex(char[] buffer, int offset, int length)
+        private int ParseHex(string s)
         {
-            if (length % 2 != 0)
-            {
-                throw new ArgumentException(nameof(length));
-            }
-
             int sum = 0;
 
-            for (int i = offset; i < offset + length; i += 2)
+            foreach (var c in s)
             {
-                sum <<= 8;
-                sum += ParseHex(buffer[i]) << 4;
-                sum += ParseHex(buffer[i + 1]);
+                sum <<= 4;
+                sum += ParseHex(c);
             }
 
             return sum;
@@ -167,7 +161,7 @@ namespace Rafi
 
             var chars = new char[2] { (char)high, (char)low };
 
-            return ParseHex(chars, 0, chars.Length);
+            return ParseHex(new string(chars));
         }
 
         private void ProcessCommand(StreamWriter writer, string command)
@@ -212,7 +206,22 @@ namespace Rafi
 
         private void ProcessCommandReadMemory(StreamWriter writer, string command)
         {
-            throw new NotImplementedException();
+            var args = command.Substring(1).Split(',');
+            var addr = (ulong)ParseHex(args[0]);
+            var length = ParseHex(args[1]);
+
+            var buffer = new byte[length];
+
+            try
+            {
+                emulator.Bus.Read(buffer, 0, length, addr);
+            }
+            catch (ArgumentOutOfRangeException)
+            {
+                Array.Fill<byte>(buffer, 0xcd);
+            }
+
+            SendResponse(writer, ConvertToHex(buffer));
         }
 
         private void ProcessCommandQuery(StreamWriter writer, string command)

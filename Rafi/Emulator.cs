@@ -5,8 +5,9 @@ namespace Rafi
     public class Emulator
     {
         private readonly Memory memory;
-        private readonly Bus bus;
         private readonly Processor processor;
+
+        internal Bus Bus { get; }
 
         internal Core Core
         {
@@ -23,8 +24,8 @@ namespace Rafi
         public Emulator(int xlen)
         {
             memory = new Memory();
-            bus = new Bus(memory);
-            processor = new Processor(xlen, bus);
+            Bus = new Bus(memory);
+            processor = new Processor(xlen, Bus);
         }
 
         public void LoadToMemory(string path)
@@ -47,7 +48,7 @@ namespace Rafi
             PrintHostIoValue(GetHostIoValue());
         }
 
-        private uint GetHostIoValue() => bus.ReadUInt32(HostIoAddr);
+        private uint GetHostIoValue() => Bus.ReadUInt32(HostIoAddr);
 
         private void PrintHostIoValue(uint value)
         {
