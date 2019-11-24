@@ -15,7 +15,7 @@ namespace RafiEmu
 
                     emulator.Pc = option.Pc;
                     emulator.LoadToMemory(option.Load);
-                    emulator.Process(option.Cycle);
+                    emulator.Process(option.Cycle, Emulator.StopCondition.HostIo);
 
                     if (option.GdbPort == 0)
                     {

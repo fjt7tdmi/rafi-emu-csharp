@@ -4,6 +4,13 @@ namespace Rafi
 {
     public class Emulator
     {
+        [Flags]
+        public enum StopCondition
+        {
+            HostIo = 1,
+            Trap = 2,
+        }
+
         private readonly Memory memory;
         private readonly Processor processor;
 
@@ -33,19 +40,26 @@ namespace Rafi
             memory.Load(path);
         }
 
-        public void Process(int cycle)
+        public void ProcessCycle()
+        {
+            processor.ProcessCycle();
+        }
+
+        public void Process(int cycle, StopCondition condition)
         {
             for (int i = 0; i < cycle; i++)
             {
-                if (GetHostIoValue() != 0)
+                if (condition.HasFlag(StopCondition.HostIo))
                 {
-                    break;
+                    if (GetHostIoValue() != 0)
+                    {
+                        PrintHostIoValue(GetHostIoValue());
+                        return;
+                    }
                 }
 
-                processor.ProcessCycle();
+                ProcessCycle();
             }
-
-            PrintHostIoValue(GetHostIoValue());
         }
 
         private uint GetHostIoValue() => Bus.ReadUInt32(HostIoAddr);

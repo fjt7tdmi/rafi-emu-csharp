@@ -166,28 +166,48 @@ namespace Rafi
 
         private void ProcessCommand(StreamWriter writer, string command)
         {
-            switch (command[0])
+            if (command.StartsWith("?"))
             {
-                case 'g':
-                    ProcessCommandReadReg(writer);
-                    break;
-                case 'm':
-                    ProcessCommandReadMemory(writer, command);
-                    break;
-                case 'q':
-                    ProcessCommandQuery(writer, command);
-                    break;
-                case 'H':
-                    // This emulator supports only thread 0, but always returns 'OK' for H command.
-                    SendResponse(writer, "OK");
-                    break;
-                case '?':
-                    SendResponse(writer, "S05"); // 05: SIGTRAP
-                    break;
-                default:
-                    SendResponse(writer, "");
-                    break;
+                SendResponse(writer, "S05"); // 05: SIGTRAP
             }
+            else if (command.StartsWith("H"))
+            {
+                // This emulator supports only thread 0, but always returns 'OK' for H command.
+                SendResponse(writer, "OK");
+            }
+            else if (command.StartsWith("c"))
+            {
+                ProcessCommandContinue(writer, command);
+            }
+            else if (command.StartsWith("g"))
+            {
+                ProcessCommandReadReg(writer);
+            }
+            else if (command.StartsWith("m"))
+            {
+                ProcessCommandReadMemory(writer, command);
+            }
+            else if (command.StartsWith("q"))
+            {
+                ProcessCommandQuery(writer, command);
+            }
+            else if (command.StartsWith("s"))
+            {
+                ProcessCommandStep(writer, command);
+            }
+            else if (command.StartsWith("vCont?"))
+            {
+                SendResponse(writer, "vCont;c;s");
+            }
+            else
+            {
+                SendResponse(writer, "");
+            }
+        }
+
+        private void ProcessCommandContinue(StreamWriter writer, string command)
+        {
+            throw new NotImplementedException();
         }
 
         private void ProcessCommandReadReg(StreamWriter writer)
@@ -226,7 +246,7 @@ namespace Rafi
 
         private void ProcessCommandQuery(StreamWriter writer, string command)
         {
-            var pos = command.IndexOf(':');
+            var pos = command.IndexOf(';');
             var name = (pos != -1) ? command.Substring(0, pos) : command;
 
             switch (name)
@@ -250,6 +270,12 @@ namespace Rafi
                     SendResponse(writer, "");
                     break;
             }
+        }
+
+        private void ProcessCommandStep(StreamWriter writer, string command)
+        {
+            emulator.ProcessCycle();
+            SendResponse(writer, "T05");
         }
 
         private void SendAck(StreamWriter writer)
