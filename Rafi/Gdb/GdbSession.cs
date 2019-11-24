@@ -207,7 +207,8 @@ namespace Rafi
 
         private void ProcessCommandContinue(StreamWriter writer, string command)
         {
-            throw new NotImplementedException();
+            emulator.Process(Emulator.StopCondition.Breakpoint);
+            SendResponse(writer, "T05");
         }
 
         private void ProcessCommandReadReg(StreamWriter writer)

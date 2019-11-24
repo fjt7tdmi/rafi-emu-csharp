@@ -30,7 +30,7 @@ namespace Rafi
             Core = new Core(bus);
         }
 
-        public void ProcessCycle()
+        public Cycle ProcessCycle()
         {
             var insn = bus.ReadUInt32(Core.Pc32);
 
@@ -48,8 +48,11 @@ namespace Rafi
                 if (trap != null)
                 {
                     ProcessTrap(trap);
-                    return;
+
+                    return new Cycle(Core.Pc64, insn, op, trap);
                 }
+
+                return new Cycle(Core.Pc64, insn, op);
             }
             finally
             {

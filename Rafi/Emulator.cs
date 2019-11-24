@@ -8,7 +8,7 @@ namespace Rafi
         public enum StopCondition
         {
             HostIo = 1,
-            Trap = 2,
+            Breakpoint = 2,
         }
 
         private readonly Memory memory;
@@ -40,26 +40,69 @@ namespace Rafi
             memory.Load(path);
         }
 
-        public void ProcessCycle()
+        internal Cycle ProcessCycle() => processor.ProcessCycle();
+
+        public void Process(StopCondition condition)
         {
-            processor.ProcessCycle();
+            while (true)
+            {
+                if (PreCheckStopCondition(condition))
+                {
+                    break;
+                }
+
+                var cycle = ProcessCycle();
+
+                if (PostCheckStopCondition(cycle, condition))
+                {
+                    break;
+                }
+            }
         }
 
         public void Process(int cycle, StopCondition condition)
         {
             for (int i = 0; i < cycle; i++)
             {
-                if (condition.HasFlag(StopCondition.HostIo))
+                if (PreCheckStopCondition(condition))
                 {
-                    if (GetHostIoValue() != 0)
-                    {
-                        PrintHostIoValue(GetHostIoValue());
-                        return;
-                    }
+                    break;
                 }
 
-                ProcessCycle();
+                var cycleLog = ProcessCycle();
+
+                if (PostCheckStopCondition(cycleLog, condition))
+                {
+                    break;
+                }
             }
+        }
+
+        private bool PreCheckStopCondition(StopCondition condition)
+        {
+            if (condition.HasFlag(StopCondition.HostIo))
+            {
+                if (GetHostIoValue() != 0)
+                {
+                    PrintHostIoValue(GetHostIoValue());
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private bool PostCheckStopCondition(Cycle cycle, StopCondition condition)
+        {
+            if (condition.HasFlag(StopCondition.Breakpoint))
+            {
+                if (cycle.Trap != null)
+                {
+                    return cycle.Trap.Exception == ExceptionType.Breakpoint;
+                }
+            }
+
+            return false;
         }
 
         private uint GetHostIoValue() => Bus.ReadUInt32(HostIoAddr);
