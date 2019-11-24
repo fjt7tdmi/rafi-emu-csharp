@@ -74,6 +74,8 @@ namespace Rafi
 
         private string ConvertToHex(ulong value) => ConvertToHex(BitConverter.GetBytes(value));
 
+        private string ConvertToHex(string value) => ConvertToHex(Encoding.UTF8.GetBytes(value));
+
         private int ParseHex(string s)
         {
             int sum = 0;
@@ -185,7 +187,8 @@ namespace Rafi
             }
             else if (command.StartsWith("c"))
             {
-                ProcessCommandContinue(writer, command);
+                //ProcessCommandContinue(writer, command);
+                SendResponse(writer, "S05");
             }
             else if (command.StartsWith("g"))
             {
@@ -194,6 +197,12 @@ namespace Rafi
             else if (command.StartsWith("m"))
             {
                 ProcessCommandReadMemory(writer, command);
+            }
+            else if (command.StartsWith("qThreadExtraInfo"))
+            {
+                // This logic is not in ProcessCommandQuery() because qThreadExtraInfo command has special formats.
+                // See https://sourceware.org/gdb/onlinedocs/gdb/General-Query-Packets.html
+                SendResponse(writer, ConvertToHex("Breaked."));
             }
             else if (command.StartsWith("q"))
             {
