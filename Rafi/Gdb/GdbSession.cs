@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -8,7 +9,10 @@ namespace Rafi
 {
     internal class GdbSession
     {
+        private const uint BreakInsn = 0x100073;
+
         private readonly Logger logger = new Logger("gdb");
+        private readonly IDictionary<ulong, uint> memoryBackups = new Dictionary<ulong, uint>();
 
         private readonly Emulator emulator;
 
@@ -175,6 +179,10 @@ namespace Rafi
                 // This emulator supports only thread 0, but always returns 'OK' for H command.
                 SendResponse(writer, "OK");
             }
+            else if (command.StartsWith("Z0"))
+            {
+                ProcessCommandInsertBreakPoint(writer, command);
+            }
             else if (command.StartsWith("c"))
             {
                 ProcessCommandContinue(writer, command);
@@ -199,6 +207,10 @@ namespace Rafi
             {
                 SendResponse(writer, "vCont;c;s");
             }
+            else if (command.StartsWith("z0"))
+            {
+                ProcessCommandRemoveBreakPoint(writer, command);
+            }
             else
             {
                 SendResponse(writer, "");
@@ -208,7 +220,7 @@ namespace Rafi
         private void ProcessCommandContinue(StreamWriter writer, string command)
         {
             emulator.Process(Emulator.StopCondition.Breakpoint);
-            SendResponse(writer, "T05");
+            SendResponse(writer, "S05");
         }
 
         private void ProcessCommandReadReg(StreamWriter writer)
@@ -277,6 +289,34 @@ namespace Rafi
         {
             emulator.ProcessCycle();
             SendResponse(writer, "T05");
+        }
+
+        private void ProcessCommandInsertBreakPoint(StreamWriter writer, string command)
+        {
+            var args = command.Substring(1).Split(',');
+            var addr = (ulong)ParseHex(args[1]);
+
+            Debug.Assert(!memoryBackups.ContainsKey(addr));
+
+            var value = emulator.Bus.ReadUInt32(addr);
+            memoryBackups.Add(addr, value);
+            emulator.Bus.WriteUInt32(addr, BreakInsn);
+
+            SendResponse(writer, "OK");
+        }
+
+        private void ProcessCommandRemoveBreakPoint(StreamWriter writer, string command)
+        {
+            var args = command.Substring(1).Split(',');
+            var addr = (ulong)ParseHex(args[1]);
+
+            Debug.Assert(memoryBackups.ContainsKey(addr));
+
+            var value = memoryBackups[addr];
+            emulator.Bus.WriteUInt32(addr, value);
+            memoryBackups.Remove(addr);
+
+            SendResponse(writer, "OK");
         }
 
         private void SendAck(StreamWriter writer)
