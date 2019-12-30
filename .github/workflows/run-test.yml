@@ -15,5 +15,3 @@ jobs:
       run: dotnet-sdk.dotnet build --configuration Release
     - name: Run unit test
       run: dotnet-sdk.dotnet test
-    - name: Run riscv-tests
-      run: dotnet-sdk.csi run_riscv_tests.csx
