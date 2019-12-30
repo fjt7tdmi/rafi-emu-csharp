@@ -78,6 +78,8 @@ namespace Rafi
             }
         }
 
+        public uint GetHostIoValue() => Bus.ReadUInt32(HostIoAddr);
+
         private bool PreCheckStopCondition(StopCondition condition)
         {
             if (condition.HasFlag(StopCondition.HostIo))
@@ -104,8 +106,6 @@ namespace Rafi
 
             return false;
         }
-
-        private uint GetHostIoValue() => Bus.ReadUInt32(HostIoAddr);
 
         private void PrintHostIoValue(uint value)
         {

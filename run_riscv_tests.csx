@@ -1,21 +1,19 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.IO;
 
-var envName = "RAFI_EMU";
 var rafiEmu = Path.GetFullPath("RafiEmu/bin/Debug/netcoreapp3.0/RafiEmu.exe");
 
-var dir = Environment.GetEnvironmentVariable(envName);
-if (string.IsNullOrEmpty(dir))
-{
-    Console.Error.WriteLine($"Environment variable '{envName}' is not set.");
-    Environment.Exit(1);
-}
+var dir = "rafi-prebuilt-binary";
 if (!Directory.Exists(dir))
 {
     Console.Error.WriteLine($"Directory '{dir}' is not found.");
     Environment.Exit(1);
 }
+
+var exitCodes = new List<int>();
 
 using (var stream = File.OpenRead("riscv_tests.config.txt"))
 using (var reader = new StreamReader(stream))
@@ -29,7 +27,7 @@ using (var reader = new StreamReader(stream))
         }
 
         var file = line.TrimEnd() + ".bin";
-        var path = Path.Combine(dir, "work", "riscv-tests", file);
+        var path = Path.Combine(dir, "riscv-tests", "isa", file);
         var xlen = line.StartsWith("rv32") ? 32 : 64;
         var arguments = $"-x {xlen} -c 1000 -l {path}";
 
@@ -47,5 +45,15 @@ using (var reader = new StreamReader(stream))
         process.StandardInput.Close();
 
         Console.WriteLine(process.StandardOutput.ReadToEnd());
+
+        exitCodes.Add(process.ExitCode);
     }
+
+    var success = exitCodes.Where(x => x == 0).Count();
+    var failure = exitCodes.Where(x => x != 0).Count();
+
+    Console.WriteLine($"{success} tests succeeded.");
+    Console.WriteLine($"{failure} tests failed.");
+
+    return failure;
 }

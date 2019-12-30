@@ -17,10 +17,12 @@ namespace RafiEmu
                     emulator.LoadToMemory(option.Load);
                     emulator.Process(option.Cycle, Emulator.StopCondition.HostIo);
 
+                    var exitCode = emulator.GetHostIoValue() == 1 ? 0 : 1;
+
                     if (option.GdbPort == 0)
                     {
                         // GDB server is disabled.
-                        Environment.Exit(0);
+                        Environment.Exit(exitCode);
                     }
 
                     using (var gdbServer = new GdbServer(emulator, option.GdbPort))
@@ -29,6 +31,8 @@ namespace RafiEmu
                         Console.WriteLine("Please input some characters to finish.");
                         Console.Read();
                     }
+
+                    Environment.Exit(exitCode);
                 });
         }
     }
