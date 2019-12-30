@@ -268,7 +268,7 @@ namespace Rafi
 
         private void ProcessCommandQuery(StreamWriter writer, string command)
         {
-            var pos = command.IndexOf(';');
+            var pos = command.IndexOf(':');
             var name = (pos != -1) ? command.Substring(0, pos) : command;
 
             switch (name)
