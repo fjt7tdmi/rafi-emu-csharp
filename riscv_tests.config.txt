@@ -39,8 +39,6 @@ rv32ui-p-xor
 rv32ui-p-xori
 rv64ui-p-add
 rv64ui-p-addi
-rv64ui-p-add
-rv64ui-p-addi
 rv64ui-p-addiw
 rv64ui-p-addw
 rv64ui-p-and
