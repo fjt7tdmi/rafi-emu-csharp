@@ -13,7 +13,7 @@ if (!Directory.Exists(dir))
     Environment.Exit(1);
 }
 
-var exitCodes = new List<int>();
+var exitCodes = new Dictionary<string, int>();
 
 using (var stream = File.OpenRead("riscv_tests.config.txt"))
 using (var reader = new StreamReader(stream))
@@ -26,7 +26,8 @@ using (var reader = new StreamReader(stream))
             break;
         }
 
-        var file = line.TrimEnd() + ".bin";
+        var testName = line.TrimEnd();
+        var file = testName + ".bin";
         var path = Path.Combine(dir, "riscv-tests", "isa", file);
         var xlen = line.StartsWith("rv32") ? 32 : 64;
         var arguments = $"-x {xlen} -c 1000 -l {path}";
@@ -46,14 +47,25 @@ using (var reader = new StreamReader(stream))
 
         Console.WriteLine(process.StandardOutput.ReadToEnd());
 
-        exitCodes.Add(process.ExitCode);
+        exitCodes.Add(testName, process.ExitCode);
     }
 
-    var success = exitCodes.Where(x => x == 0).Count();
-    var failure = exitCodes.Where(x => x != 0).Count();
+    var success = exitCodes.Values.Where(x => x == 0).Count();
+    var failure = exitCodes.Values.Where(x => x != 0).Count();
 
+    Console.WriteLine("--");
     Console.WriteLine($"{success} tests succeeded.");
     Console.WriteLine($"{failure} tests failed.");
+    Console.WriteLine("");
+    Console.WriteLine("Failed tests:");
+
+    foreach (var e in exitCodes)
+    {
+        if (e.Value != 0)
+        {
+            Console.WriteLine($"  {e.Key}");
+        }
+    }
 
     return failure;
 }
