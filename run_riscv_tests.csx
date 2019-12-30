@@ -4,6 +4,12 @@ using System.Diagnostics;
 using System.Linq;
 using System.IO;
 
+var filter = string.Empty;
+if (Args.Count() > 0)
+{
+    filter = Args[0];
+}
+
 var rafiEmu = Path.GetFullPath("RafiEmu/bin/Debug/netcoreapp3.0/RafiEmu.exe");
 
 var dir = "rafi-prebuilt-binary";
@@ -27,6 +33,11 @@ using (var reader = new StreamReader(stream))
         }
 
         var testName = line.TrimEnd();
+        if (!testName.StartsWith(filter))
+        {
+            continue;
+        }
+
         var file = testName + ".bin";
         var path = Path.Combine(dir, "riscv-tests", "isa", file);
         var xlen = line.StartsWith("rv32") ? 32 : 64;
