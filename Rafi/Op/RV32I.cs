@@ -467,7 +467,7 @@ namespace Rafi.RV32I
         {
             var x = core.IntReg32;
             var addr = x[rs1] + imm;
-            var value = (ushort)x[rs2];
+            var value = x[rs2];
 
             core.Bus.WriteUInt32(addr, value);
         }

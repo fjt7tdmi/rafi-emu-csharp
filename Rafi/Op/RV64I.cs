@@ -529,7 +529,7 @@ namespace Rafi.RV64I
             var x = core.IntReg64;
 
             var addr = x[rs1] + imm;
-            var value = (ushort)x[rs2];
+            var value = (uint)x[rs2];
 
             core.Bus.WriteUInt32(addr, value);
         }
