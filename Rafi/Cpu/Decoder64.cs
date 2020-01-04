@@ -170,7 +170,7 @@ namespace Rafi
                     {
                         return new RV64I.FENCE((int)Utils.Pick(insn, 24, 4), (int)Utils.Pick(insn, 20, 4));
                     }
-                    else if (i.rs1 == 0b00000 && i.funct3 == 0b000 && i.rd == 0b00000 && i.imm == 0b0000_0000_0000)
+                    else if (i.rs1 == 0b00000 && i.funct3 == 0b001 && i.rd == 0b00000 && i.imm == 0b0000_0000_0000)
                     {
                         return new RV64I.FENCE_I();
                     }
