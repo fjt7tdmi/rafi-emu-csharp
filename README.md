@@ -8,7 +8,7 @@ Toy riscv emulator by C#
 |Feature      |Progress|
 |-------------|--------|
 |RV32I        |Done    |
-|RV32M        |-       |
+|RV32M        |Done    |
 |RV32A        |-       |
 |RV32F        |-       |
 |RV32D        |-       |
