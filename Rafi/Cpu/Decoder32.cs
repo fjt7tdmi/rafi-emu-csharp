@@ -115,45 +115,42 @@ namespace Rafi
                             return ThrowUnknownInsnException(insn);
                     }
                 case 0b0110011:
-                    if (r.funct3 == 0b000 && r.funct7 == 0b0000000)
+                    if (r.funct7 == 0b0000000)
                     {
-                        return new RV32I.ADD(r.rd, r.rs1, r.rs2);
+                        return r.funct3 switch
+                        {
+                            0b000 => new RV32I.ADD(r.rd, r.rs1, r.rs2),
+                            0b001 => new RV32I.SLL(r.rd, r.rs1, r.rs2),
+                            0b010 => new RV32I.SLT(r.rd, r.rs1, r.rs2),
+                            0b011 => new RV32I.SLTU(r.rd, r.rs1, r.rs2),
+                            0b100 => new RV32I.XOR(r.rd, r.rs1, r.rs2),
+                            0b101 => new RV32I.SRL(r.rd, r.rs1, r.rs2),
+                            0b110 => new RV32I.OR(r.rd, r.rs1, r.rs2),
+                            _ => new RV32I.AND(r.rd, r.rs1, r.rs2),
+                        };
                     }
-                    else if (r.funct3 == 0b000 && r.funct7 == 0b0100000)
+                    else if (r.funct7 == 0b0000001)
                     {
-                        return new RV32I.SUB(r.rd, r.rs1, r.rs2);
+                        return r.funct3 switch
+                        {
+                            0b000 => new RV32M.MUL(r.rd, r.rs1, r.rs2),
+                            0b001 => new RV32M.MULH(r.rd, r.rs1, r.rs2),
+                            0b010 => new RV32M.MULHSU(r.rd, r.rs1, r.rs2),
+                            0b011 => new RV32M.MULHU(r.rd, r.rs1, r.rs2),
+                            0b100 => new RV32M.DIV(r.rd, r.rs1, r.rs2),
+                            0b101 => new RV32M.DIVU(r.rd, r.rs1, r.rs2),
+                            0b110 => new RV32M.REM(r.rd, r.rs1, r.rs2),
+                            _ => new RV32M.REMU(r.rd, r.rs1, r.rs2),
+                        };
                     }
-                    else if (r.funct3 == 0b001 && r.funct7 == 0b0000000)
+                    else if (r.funct7 == 0b0100000)
                     {
-                        return new RV32I.SLL(r.rd, r.rs1, r.rs2);
-                    }
-                    else if (r.funct3 == 0b010 && r.funct7 == 0b0000000)
-                    {
-                        return new RV32I.SLT(r.rd, r.rs1, r.rs2);
-                    }
-                    else if (r.funct3 == 0b011 && r.funct7 == 0b0000000)
-                    {
-                        return new RV32I.SLTU(r.rd, r.rs1, r.rs2);
-                    }
-                    else if (r.funct3 == 0b100 && r.funct7 == 0b0000000)
-                    {
-                        return new RV32I.XOR(r.rd, r.rs1, r.rs2);
-                    }
-                    else if (r.funct3 == 0b101 && r.funct7 == 0b0000000)
-                    {
-                        return new RV32I.SRL(r.rd, r.rs1, r.rs2);
-                    }
-                    else if (r.funct3 == 0b101 && r.funct7 == 0b0100000)
-                    {
-                        return new RV32I.SRA(r.rd, r.rs1, r.rs2);
-                    }
-                    else if (r.funct3 == 0b110 && r.funct7 == 0b0000000)
-                    {
-                        return new RV32I.OR(r.rd, r.rs1, r.rs2);
-                    }
-                    else if (r.funct3 == 0b111 && r.funct7 == 0b0000000)
-                    {
-                        return new RV32I.AND(r.rd, r.rs1, r.rs2);
+                        return r.funct3 switch
+                        {
+                            0b000 => new RV32I.SUB(r.rd, r.rs1, r.rs2),
+                            0b101 => new RV32I.SRA(r.rd, r.rs1, r.rs2),
+                            _ => ThrowUnknownInsnException(insn),
+                        };
                     }
                     else
                     {
