@@ -34,7 +34,7 @@ namespace Rafi
         public static ulong SignExtend64(int width, ulong value)
         {
             var sign = (value >> (width - 1)) & 1;
-            var mask = (1u << width) - 1;
+            var mask = (1ul << width) - 1;
 
             if (sign == 0)
             {
@@ -65,7 +65,7 @@ namespace Rafi
 
         public static ulong ZeroExtend64(int width, ulong value)
         {
-            var mask = (1u << width) - 1;
+            var mask = (1ul << width) - 1;
 
             return value & mask;
         }

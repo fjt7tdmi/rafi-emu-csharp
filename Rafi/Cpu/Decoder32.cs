@@ -29,51 +29,34 @@ namespace Rafi
                 case 0b1100111:
                     return new RV32I.JALR(i.rd, i.rs1, i.imm);
                 case 0b1100011:
-                    switch(b.funct3)
+                    return b.funct3 switch
                     {
-                        case 0b000:
-                            return new RV32I.BEQ(b.rs1, b.rs2, b.imm);
-                        case 0b001:
-                            return new RV32I.BNE(b.rs1, b.rs2, b.imm);
-                        case 0b100:
-                            return new RV32I.BLT(b.rs1, b.rs2, b.imm);
-                        case 0b101:
-                            return new RV32I.BGE(b.rs1, b.rs2, b.imm);
-                        case 0b110:
-                            return new RV32I.BLTU(b.rs1, b.rs2, b.imm);
-                        case 0b111:
-                            return new RV32I.BGEU(b.rs1, b.rs2, b.imm);
-                        default:
-                            return ThrowUnknownInsnException(insn);
-                    }
+                        0b000 => new RV32I.BEQ(b.rs1, b.rs2, b.imm),
+                        0b001 => new RV32I.BNE(b.rs1, b.rs2, b.imm),
+                        0b100 => new RV32I.BLT(b.rs1, b.rs2, b.imm),
+                        0b101 => new RV32I.BGE(b.rs1, b.rs2, b.imm),
+                        0b110 => new RV32I.BLTU(b.rs1, b.rs2, b.imm),
+                        0b111 => new RV32I.BGEU(b.rs1, b.rs2, b.imm),
+                        _ => ThrowUnknownInsnException(insn),
+                    };
                 case 0b0000011:
-                    switch (i.funct3)
+                    return i.funct3 switch
                     {
-                        case 0b000:
-                            return new RV32I.LB(i.rd, i.rs1, i.imm);
-                        case 0b001:
-                            return new RV32I.LH(i.rd, i.rs1, i.imm);
-                        case 0b010:
-                            return new RV32I.LW(i.rd, i.rs1, i.imm);
-                        case 0b100:
-                            return new RV32I.LBU(i.rd, i.rs1, i.imm);
-                        case 0b101:
-                            return new RV32I.LHU(i.rd, i.rs1, i.imm);
-                        default:
-                            return ThrowUnknownInsnException(insn);
-                    }
+                        0b000 => new RV32I.LB(i.rd, i.rs1, i.imm),
+                        0b001 => new RV32I.LH(i.rd, i.rs1, i.imm),
+                        0b010 => new RV32I.LW(i.rd, i.rs1, i.imm),
+                        0b100 => new RV32I.LBU(i.rd, i.rs1, i.imm),
+                        0b101 => new RV32I.LHU(i.rd, i.rs1, i.imm),
+                        _ => ThrowUnknownInsnException(insn),
+                    };
                 case 0b0100011:
-                    switch (s.funct3)
+                    return s.funct3 switch
                     {
-                        case 0b000:
-                            return new RV32I.SB(s.rs1, s.rs2, s.imm);
-                        case 0b001:
-                            return new RV32I.SH(s.rs1, s.rs2, s.imm);
-                        case 0b010:
-                            return new RV32I.SW(s.rs1, s.rs2, s.imm);
-                        default:
-                            return ThrowUnknownInsnException(insn);
-                    }
+                        0b000 => new RV32I.SB(s.rs1, s.rs2, s.imm),
+                        0b001 => new RV32I.SH(s.rs1, s.rs2, s.imm),
+                        0b010 => new RV32I.SW(s.rs1, s.rs2, s.imm),
+                        _ => ThrowUnknownInsnException(insn),
+                    };
                 case 0b0010011:
                     switch (i.funct3)
                     {
@@ -115,45 +98,42 @@ namespace Rafi
                             return ThrowUnknownInsnException(insn);
                     }
                 case 0b0110011:
-                    if (r.funct3 == 0b000 && r.funct7 == 0b0000000)
+                    if (r.funct7 == 0b0000000)
                     {
-                        return new RV32I.ADD(r.rd, r.rs1, r.rs2);
+                        return r.funct3 switch
+                        {
+                            0b000 => new RV32I.ADD(r.rd, r.rs1, r.rs2),
+                            0b001 => new RV32I.SLL(r.rd, r.rs1, r.rs2),
+                            0b010 => new RV32I.SLT(r.rd, r.rs1, r.rs2),
+                            0b011 => new RV32I.SLTU(r.rd, r.rs1, r.rs2),
+                            0b100 => new RV32I.XOR(r.rd, r.rs1, r.rs2),
+                            0b101 => new RV32I.SRL(r.rd, r.rs1, r.rs2),
+                            0b110 => new RV32I.OR(r.rd, r.rs1, r.rs2),
+                            _ => new RV32I.AND(r.rd, r.rs1, r.rs2),
+                        };
                     }
-                    else if (r.funct3 == 0b000 && r.funct7 == 0b0100000)
+                    else if (r.funct7 == 0b0000001)
                     {
-                        return new RV32I.SUB(r.rd, r.rs1, r.rs2);
+                        return r.funct3 switch
+                        {
+                            0b000 => new RV32M.MUL(r.rd, r.rs1, r.rs2),
+                            0b001 => new RV32M.MULH(r.rd, r.rs1, r.rs2),
+                            0b010 => new RV32M.MULHSU(r.rd, r.rs1, r.rs2),
+                            0b011 => new RV32M.MULHU(r.rd, r.rs1, r.rs2),
+                            0b100 => new RV32M.DIV(r.rd, r.rs1, r.rs2),
+                            0b101 => new RV32M.DIVU(r.rd, r.rs1, r.rs2),
+                            0b110 => new RV32M.REM(r.rd, r.rs1, r.rs2),
+                            _ => new RV32M.REMU(r.rd, r.rs1, r.rs2),
+                        };
                     }
-                    else if (r.funct3 == 0b001 && r.funct7 == 0b0000000)
+                    else if (r.funct7 == 0b0100000)
                     {
-                        return new RV32I.SLL(r.rd, r.rs1, r.rs2);
-                    }
-                    else if (r.funct3 == 0b010 && r.funct7 == 0b0000000)
-                    {
-                        return new RV32I.SLT(r.rd, r.rs1, r.rs2);
-                    }
-                    else if (r.funct3 == 0b011 && r.funct7 == 0b0000000)
-                    {
-                        return new RV32I.SLTU(r.rd, r.rs1, r.rs2);
-                    }
-                    else if (r.funct3 == 0b100 && r.funct7 == 0b0000000)
-                    {
-                        return new RV32I.XOR(r.rd, r.rs1, r.rs2);
-                    }
-                    else if (r.funct3 == 0b101 && r.funct7 == 0b0000000)
-                    {
-                        return new RV32I.SRL(r.rd, r.rs1, r.rs2);
-                    }
-                    else if (r.funct3 == 0b101 && r.funct7 == 0b0100000)
-                    {
-                        return new RV32I.SRA(r.rd, r.rs1, r.rs2);
-                    }
-                    else if (r.funct3 == 0b110 && r.funct7 == 0b0000000)
-                    {
-                        return new RV32I.OR(r.rd, r.rs1, r.rs2);
-                    }
-                    else if (r.funct3 == 0b111 && r.funct7 == 0b0000000)
-                    {
-                        return new RV32I.AND(r.rd, r.rs1, r.rs2);
+                        return r.funct3 switch
+                        {
+                            0b000 => new RV32I.SUB(r.rd, r.rs1, r.rs2),
+                            0b101 => new RV32I.SRA(r.rd, r.rs1, r.rs2),
+                            _ => ThrowUnknownInsnException(insn),
+                        };
                     }
                     else
                     {
@@ -203,23 +183,16 @@ namespace Rafi
                     }
                     else
                     {
-                        switch (i_csr.funct3)
+                        return i_csr.funct3 switch
                         {
-                            case 0b001:
-                                return new RV32I.CSRRW(i_csr.csr, i_csr.rd, i_csr.rs1);
-                            case 0b010:
-                                return new RV32I.CSRRS(i_csr.csr, i_csr.rd, i_csr.rs1);
-                            case 0b011:
-                                return new RV32I.CSRRC(i_csr.csr, i_csr.rd, i_csr.rs1);
-                            case 0b101:
-                                return new RV32I.CSRRWI(i_csr.csr, i_csr.rd, i_csr.zimm);
-                            case 0b110:
-                                return new RV32I.CSRRSI(i_csr.csr, i_csr.rd, i_csr.zimm);
-                            case 0b111:
-                                return new RV32I.CSRRCI(i_csr.csr, i_csr.rd, i_csr.zimm);
-                            default:
-                                return ThrowUnknownInsnException(insn);
-                        }
+                            0b001 => new RV32I.CSRRW(i_csr.csr, i_csr.rd, i_csr.rs1),
+                            0b010 => new RV32I.CSRRS(i_csr.csr, i_csr.rd, i_csr.rs1),
+                            0b011 => new RV32I.CSRRC(i_csr.csr, i_csr.rd, i_csr.rs1),
+                            0b101 => new RV32I.CSRRWI(i_csr.csr, i_csr.rd, i_csr.zimm),
+                            0b110 => new RV32I.CSRRSI(i_csr.csr, i_csr.rd, i_csr.zimm),
+                            0b111 => new RV32I.CSRRCI(i_csr.csr, i_csr.rd, i_csr.zimm),
+                            _ => ThrowUnknownInsnException(insn),
+                        };
                     }
                 default:
                     return ThrowUnknownInsnException(insn);
